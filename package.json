@@ -9,11 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
     "@prisma/client": "^5.6.0",
     "axios": "^1.6.2",
     "next": "13.4.19",
+    "nuka-carousel": "^7.0.0",
     "react": "^18",
     "react-dom": "^18"
   },
@@ -21,6 +20,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-image-gallery": "^1.2.4",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.3",

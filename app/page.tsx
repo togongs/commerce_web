@@ -10,9 +10,9 @@ interface FormData {
 }
 
 export default async function Home() {
-  const products = (await fetch(`http://localhost:3000/api/products`).then(
+  const products = await fetch(`http://localhost:3000/api/products`).then(
     (res) => res.json(),
-  )) as FormData[]
+  )
   console.log('products', products)
 
   return <Form products={products} />
