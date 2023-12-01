@@ -20,7 +20,7 @@ const images = [
   },
 ]
 
-export default function Products() {
+export default function Page() {
   const [index, setIndex] = React.useState(0)
   return (
     <>
