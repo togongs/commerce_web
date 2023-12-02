@@ -1,9 +1,11 @@
 'use client'
 
+import CustomEditor from '@/components/Editor'
+import { EditorState, convertFromRaw, convertToRaw } from 'draft-js'
 import Image from 'next/image'
+import { useParams } from 'next/navigation'
 import Carousel from 'nuka-carousel'
-import React from 'react'
-// import ImageGallery from 'react-image-gallery'
+import React, { useState } from 'react'
 
 const images = [
   {
@@ -22,6 +24,30 @@ const images = [
 
 export default function Page() {
   const [index, setIndex] = React.useState(0)
+  const params = useParams()
+  const productId = params?.id
+  const [editorState, setEditorState] = useState<EditorState | undefined>(
+    undefined,
+  )
+
+  React.useEffect(() => {
+    if (productId != null) {
+      fetch(`/api/products/${productId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.contents) {
+            setEditorState(
+              EditorState.createWithContent(
+                convertFromRaw(JSON.parse(data.contents)),
+              ),
+            )
+          } else {
+            setEditorState(EditorState.createEmpty())
+          }
+        })
+    }
+  }, [productId])
+
   return (
     <>
       <Carousel
@@ -50,6 +76,9 @@ export default function Page() {
           </div>
         ))}
       </div>
+      {editorState != null && (
+        <CustomEditor editorState={editorState} readOnly />
+      )}
     </>
   )
 }
