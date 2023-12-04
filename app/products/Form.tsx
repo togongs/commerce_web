@@ -4,14 +4,20 @@ import React, { useCallback } from 'react'
 import Image from 'next/image'
 import { styled } from 'styled-components'
 import { ProductDto } from '../types/products/products.dto'
+import { Pagination } from '@mantine/core'
 
 const TAKE = 9
 export default function Form() {
-  const [skip, setSkip] = React.useState(0)
+  //   const [skip, setSkip] = React.useState(0)
+  const [activePage, setPage] = React.useState(1)
+  const [total, setTotal] = React.useState(0)
   const [products, setProducts] = React.useState<ProductDto.Response[]>([])
   const categories = '1'
   React.useEffect(() => {
-    fetch(`http://localhost:3000/api/products`, {
+    fetch(`/api/products/count`)
+      .then((res) => res.json())
+      .then((data) => setTotal(data))
+    fetch(`/api/products`, {
       method: 'POST',
       body: JSON.stringify({
         skip: 0,
@@ -21,23 +27,34 @@ export default function Form() {
       .then((res) => res.json())
       .then((data) => setProducts(data))
   }, [])
-
-  const getProducts = useCallback(() => {
-    const next = skip + TAKE
+  React.useEffect(() => {
+    const skip = TAKE * (activePage - 1)
     fetch(`/api/products`, {
       method: 'POST',
       body: JSON.stringify({
-        skip: next,
+        skip: skip,
         take: Number(`${TAKE}`),
       }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        const list = [...products, ...data]
-        setProducts(list)
-      })
-    setSkip(next)
-  }, [products, skip])
+      .then((data) => setProducts(data))
+  }, [activePage])
+  //   const getProducts = useCallback(() => {
+  //     const next = skip + TAKE
+  //     fetch(`/api/products`, {
+  //       method: 'POST',
+  //       body: JSON.stringify({
+  //         skip: next,
+  //         take: Number(`${TAKE}`),
+  //       }),
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         const list = [...products, ...data]
+  //         setProducts(list)
+  //       })
+  //     setSkip(next)
+  //   }, [products, skip])
 
   return (
     <Container>
@@ -63,7 +80,7 @@ export default function Form() {
           </ImageContainer>
         ))}
       </Grid>
-      <button
+      {/* <button
         onClick={getProducts}
         style={{
           width: '100%',
@@ -73,7 +90,8 @@ export default function Form() {
         }}
       >
         더보기
-      </button>
+      </button> */}
+      <Pagination value={activePage} onChange={setPage} total={total} />
     </Container>
   )
 }
