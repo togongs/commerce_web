@@ -1,31 +1,94 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import Image from 'next/image'
 import { styled } from 'styled-components'
+import { ProductDto } from '../types/products/products.dto'
 
-export default function Form({ products }: any) {
+const TAKE = 9
+export default function Form() {
+  const [skip, setSkip] = React.useState(0)
+  const [products, setProducts] = React.useState<ProductDto.Response[]>([])
+  const categories = '1'
+  React.useEffect(() => {
+    fetch(`http://localhost:3000/api/products`, {
+      method: 'POST',
+      body: JSON.stringify({
+        skip: 0,
+        take: Number(`${TAKE}`),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+  }, [])
+
+  const getProducts = useCallback(() => {
+    const next = skip + TAKE
+    fetch(`/api/products`, {
+      method: 'POST',
+      body: JSON.stringify({
+        skip: next,
+        take: Number(`${TAKE}`),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const list = [...products, ...data]
+        setProducts(list)
+      })
+    setSkip(next)
+  }, [products, skip])
+
   return (
-    <div style={{ padding: 36 }}>
+    <Container>
       <Grid>
         {products?.map((item: any) => (
-          <div key={item.id}>
-            {item.name}
+          <ImageContainer key={item.id}>
             <Image
+              style={{ borderRadius: 12 }}
               src={item.image_url ?? ''}
               width={300}
               height={200}
               alt="image"
             />
-          </div>
+            <p>{item.name}</p>
+            <p>{item.price.toLocaleString()}원</p>
+            <CategoryName>
+              {
+                {
+                  1: '의류',
+                }[categories]
+              }
+            </CategoryName>
+          </ImageContainer>
         ))}
       </Grid>
-    </div>
+      <button
+        onClick={getProducts}
+        style={{
+          width: '100%',
+          borderRadius: 6,
+          backgroundColor: '#e6e6e6',
+          height: 46,
+        }}
+      >
+        더보기
+      </button>
+    </Container>
   )
 }
-
+const Container = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px;
+`
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
+`
+const ImageContainer = styled.div`
+  margin-bottom: 24px;
+`
+const CategoryName = styled.span`
+  color: gray;
 `
