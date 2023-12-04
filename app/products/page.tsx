@@ -1,18 +1,16 @@
 'use client'
 
-import React, { useCallback } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import { styled } from 'styled-components'
 import { ProductDto } from '../types/products/products.dto'
 import { Pagination } from '@mantine/core'
+import { CATEGORY_MAP, TAKE } from '@/constants/products'
 
-const TAKE = 9
 export default function Page() {
   const [activePage, setPage] = React.useState(1)
   const [total, setTotal] = React.useState(0)
-  console.log('total', total)
   const [products, setProducts] = React.useState<ProductDto.Response[]>([])
-  const categories = '1'
   React.useEffect(() => {
     fetch(`/api/products/count`)
       .then((res) => res.json())
@@ -54,13 +52,7 @@ export default function Page() {
             />
             <p>{item.name}</p>
             <p>{item.price.toLocaleString()}원</p>
-            <NameBox>
-              {
-                {
-                  1: '의류',
-                }[categories]
-              }
-            </NameBox>
+            <NameBox>{CATEGORY_MAP[item.category_id - 1]}</NameBox>
           </ImageContainer>
         ))}
       </Grid>

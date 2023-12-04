@@ -5,8 +5,8 @@ import Image from 'next/image'
 import { styled } from 'styled-components'
 import { ProductDto } from '../types/products/products.dto'
 import { Pagination } from '@mantine/core'
+import { TAKE } from '@/constants/products'
 
-const TAKE = 9
 export default function Form() {
   //   const [skip, setSkip] = React.useState(0)
   const [activePage, setPage] = React.useState(1)

@@ -12,9 +12,9 @@ const productData: Prisma.productsCreateInput[] = Array.apply(
     index + 1
   }","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":8,"length":9,"style":"BOLD"}],"entityRanges":[],"data":{}}],"entityMap":{}}`,
   category_id: 1,
-  image_url: `https://picsum.photos/id/${
+  image_url: `https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/${
     (index + 1) % 10 === 0 ? 10 : (index + 1) % 10
-  }/250/150/`,
+  }.jpg`,
   price: Math.random() * (100000 - 20000) + 20000,
 }))
 

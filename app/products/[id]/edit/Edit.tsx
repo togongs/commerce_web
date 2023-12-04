@@ -17,8 +17,42 @@ const images = [
     thumbnail: 'https://picsum.photos/id/1015/250/150/',
   },
   {
+    original: 'https://picsum.photos/id/1013/1000/600/',
+    thumbnail: 'https://picsum.photos/id/1013/250/150/',
+  },
+  {
+    original: 'https://picsum.photos/id/1012/1000/600/',
+    thumbnail: 'https://picsum.photos/id/1012/250/150/',
+  },
+  {
+    original: 'https://picsum.photos/id/1011/1000/600/',
+    thumbnail: 'https://picsum.photos/id/1011/250/150/',
+  },
+  {
+    original: 'https://picsum.photos/id/1016/1000/600/',
+    thumbnail: 'https://picsum.photos/id/1016/250/150/',
+  },
+  {
     original: 'https://picsum.photos/id/1019/1000/600/',
     thumbnail: 'https://picsum.photos/id/1019/250/150/',
+  },
+  {
+    original:
+      'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/4v.jpg',
+    thumbnail:
+      'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/4v.jpg',
+  },
+  {
+    original:
+      'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/1.jpg',
+    thumbnail:
+      'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/1.jpg',
+  },
+  {
+    original:
+      'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/2.jpg',
+    thumbnail:
+      'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/2.jpg',
   },
 ]
 
