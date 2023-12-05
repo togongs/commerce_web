@@ -4,27 +4,34 @@ import React from 'react'
 import Image from 'next/image'
 import { styled } from 'styled-components'
 import { ProductDto } from '../types/products/products.dto'
-import { Pagination } from '@mantine/core'
+import { Pagination, SegmentedControl } from '@mantine/core'
 import { CATEGORY_MAP, TAKE } from '@/constants/products'
+import { CategoryDto } from '../types/category/category.dto'
 
 export default function Page() {
-  const [activePage, setPage] = React.useState(1)
-  const [total, setTotal] = React.useState(0)
+  const [activePage, setPage] = React.useState<number>(1)
+  const [total, setTotal] = React.useState<number>(0)
+  const [categories, setCategories] = React.useState<CategoryDto.Response[]>([])
   const [products, setProducts] = React.useState<ProductDto.Response[]>([])
+  const [selectedCategory, setSelectedCategory] = React.useState<string>('-1')
+
   React.useEffect(() => {
-    fetch(`/api/products/count`)
+    fetch(`/api/categories`)
       .then((res) => res.json())
-      .then((data) => setTotal(Math.ceil(data / TAKE)))
-    fetch(`/api/products`, {
+      .then((data) => setCategories(data))
+  }, [selectedCategory])
+
+  React.useEffect(() => {
+    fetch(`/api/products/count`, {
       method: 'POST',
       body: JSON.stringify({
-        skip: 0,
-        take: Number(`${TAKE}`),
+        category: Number(selectedCategory),
       }),
     })
       .then((res) => res.json())
-      .then((data) => setProducts(data))
-  }, [])
+      .then((data) => setTotal(Math.ceil(data / TAKE)))
+  }, [selectedCategory])
+
   React.useEffect(() => {
     const skip = TAKE * (activePage - 1)
     fetch(`/api/products`, {
@@ -32,14 +39,30 @@ export default function Page() {
       body: JSON.stringify({
         skip: skip,
         take: Number(`${TAKE}`),
+        category: Number(selectedCategory),
       }),
     })
       .then((res) => res.json())
       .then((data) => setProducts(data))
-  }, [activePage])
-
+  }, [activePage, selectedCategory])
   return (
     <Container>
+      {categories && (
+        <div>
+          <SegmentedControl
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            data={[
+              { label: 'ALL', value: '-1' },
+              ...categories.map((category) => ({
+                label: category.name,
+                value: String(category.id),
+              })),
+            ]}
+            color="dark"
+          />
+        </div>
+      )}
       <Grid>
         {products?.map((item: any) => (
           <ImageContainer key={item.id}>
