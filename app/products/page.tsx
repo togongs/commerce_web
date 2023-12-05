@@ -9,12 +9,10 @@ import { CATEGORY_MAP, FILTERS, TAKE } from '@/constants/products'
 import { CategoryDto } from '../types/category/category.dto'
 import useDebounce from '@/hooks/useDebounce'
 import NotFoundPage from './not-found'
+import { useQuery } from '@tanstack/react-query'
 
 export default function Page() {
   const [activePage, setPage] = React.useState<number>(1)
-  const [total, setTotal] = React.useState<number>(0)
-  const [categories, setCategories] = React.useState<CategoryDto.Response[]>([])
-  const [products, setProducts] = React.useState<ProductDto.Response[]>([])
   const [selectedCategory, setSelectedCategory] = React.useState<string>('-1')
   const [selectedFilter, setSelectedFilter] = React.useState<string | null>(
     FILTERS[0].value,
@@ -22,40 +20,49 @@ export default function Page() {
   const [keyword, setKeyword] = React.useState('')
   const debouncedKeyword = useDebounce<string>(keyword)
 
-  React.useEffect(() => {
-    fetch(`/api/categories`)
-      .then((res) => res.json())
-      .then((data) => setCategories(data))
-  }, [selectedCategory])
+  const { data: categories } = useQuery<any, any, CategoryDto.Response[]>(
+    [`categories`],
+    () => fetch(`/api/categories`).then((res) => res.json()),
+  )
 
-  React.useEffect(() => {
-    fetch(`/api/products/count`, {
-      method: 'POST',
-      body: JSON.stringify({
-        category: Number(selectedCategory),
-        keyword: debouncedKeyword,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => setTotal(Math.ceil(data / TAKE)))
-  }, [debouncedKeyword, selectedCategory])
+  const { data: total } = useQuery(
+    [
+      `${selectedCategory}
+      ${debouncedKeyword}`,
+    ],
+    () =>
+      fetch(`/api/products/count`, {
+        method: 'POST',
+        body: JSON.stringify({
+          category: Number(selectedCategory),
+          keyword: debouncedKeyword,
+        }),
+      }).then((res) => res.json()),
+    {
+      select: (data) => Math.ceil(data / TAKE),
+    },
+  )
 
-  React.useEffect(() => {
-    const skip = TAKE * (activePage - 1)
-    fetch(`/api/products`, {
-      method: 'POST',
-      body: JSON.stringify({
-        skip: skip,
-        take: Number(`${TAKE}`),
-        category: Number(selectedCategory),
-        orderBy: selectedFilter,
-        keyword: debouncedKeyword,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-  }, [activePage, debouncedKeyword, selectedCategory, selectedFilter])
-  console.log('products', products)
+  const { data: products } = useQuery<any, any, ProductDto.Response[]>(
+    [
+      `${TAKE}
+      ${activePage}
+      ${selectedFilter}
+      ${selectedCategory}
+      ${debouncedKeyword}`,
+    ],
+    () =>
+      fetch(`/api/products`, {
+        method: 'POST',
+        body: JSON.stringify({
+          skip: TAKE * (activePage - 1),
+          take: Number(`${TAKE}`),
+          category: Number(selectedCategory),
+          orderBy: selectedFilter,
+          keyword: debouncedKeyword,
+        }),
+      }).then((res) => res.json()),
+  )
   return (
     <Container>
       <Input
@@ -87,7 +94,7 @@ export default function Page() {
           onChange={setSelectedFilter}
         />
       </FilterContainer>
-      {products.length > 0 ? (
+      {products && products.length > 0 ? (
         <Grid>
           {products?.map((item) => (
             <div key={item.id}>
@@ -111,7 +118,7 @@ export default function Page() {
         style={{ display: 'flex', justifyContent: 'center', marginTop: 25 }}
         value={activePage}
         onChange={setPage}
-        total={total}
+        total={total ?? 0}
       />
     </Container>
   )
