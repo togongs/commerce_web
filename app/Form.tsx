@@ -1,19 +1,15 @@
 import React from 'react'
+import { ProductDto } from './types/products/products.dto'
 
-// interface FormData {
-//   id: number
-//   name: string
-//   image_url: string
-//   category_id: number
-// }
+interface FormData {
+  products: ProductDto.Response[]
+}
 
-export default function Form({ products }: any) {
+export default function Form({ products }: FormData) {
   return (
     <div>
       <p>product list</p>
-      <div>
-        {products?.map((item: any) => <div key={item.id}>{item.name}</div>)}
-      </div>
+      <div>{products?.map((item) => <div key={item.id}>{item.name}</div>)}</div>
     </div>
   )
 }

@@ -59,7 +59,7 @@ export default function Form() {
   return (
     <Container>
       <Grid>
-        {products?.map((item: any) => (
+        {products?.map((item) => (
           <ImageContainer key={item.id}>
             <Image
               style={{ borderRadius: 12 }}
