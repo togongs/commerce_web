@@ -25,7 +25,7 @@ export async function GET(request: Request, params: { id: number }) {
 
 export async function POST(request: Request) {
   const body = await request.json()
-  const { id, contents, skip, take, category } = body
+  const { id, contents, skip, take, category, orderBy } = body
   console.log('category', category)
   if (id || contents) {
     try {
@@ -51,13 +51,20 @@ export async function POST(request: Request) {
             },
           }
         : undefined
+
+    const orderByCondition = orderBy
+      ? orderBy === 'latest'
+        ? { orderBy: { createdAt: 'desc' } }
+        : orderBy === 'expensive'
+          ? { orderBy: { price: 'desc' } }
+          : { orderBy: { price: 'asc' } }
+      : undefined
+
     const response = await prisma.products.findMany({
       skip,
       take,
       ...where,
-      orderBy: {
-        price: 'desc',
-      },
+      ...orderByCondition,
     })
     return NextResponse.json(response)
   }

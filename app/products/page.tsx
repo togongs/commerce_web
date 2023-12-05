@@ -4,8 +4,8 @@ import React from 'react'
 import Image from 'next/image'
 import { styled } from 'styled-components'
 import { ProductDto } from '../types/products/products.dto'
-import { Pagination, SegmentedControl } from '@mantine/core'
-import { CATEGORY_MAP, TAKE } from '@/constants/products'
+import { Pagination, SegmentedControl, Select } from '@mantine/core'
+import { CATEGORY_MAP, FILTERS, TAKE } from '@/constants/products'
 import { CategoryDto } from '../types/category/category.dto'
 
 export default function Page() {
@@ -14,6 +14,9 @@ export default function Page() {
   const [categories, setCategories] = React.useState<CategoryDto.Response[]>([])
   const [products, setProducts] = React.useState<ProductDto.Response[]>([])
   const [selectedCategory, setSelectedCategory] = React.useState<string>('-1')
+  const [selectedFilter, setSelectedFilter] = React.useState<string | null>(
+    FILTERS[0].value,
+  )
 
   React.useEffect(() => {
     fetch(`/api/categories`)
@@ -40,15 +43,16 @@ export default function Page() {
         skip: skip,
         take: Number(`${TAKE}`),
         category: Number(selectedCategory),
+        orderBy: selectedFilter,
       }),
     })
       .then((res) => res.json())
       .then((data) => setProducts(data))
-  }, [activePage, selectedCategory])
+  }, [activePage, selectedCategory, selectedFilter])
   return (
     <Container>
-      {categories && (
-        <div>
+      <FilterContainer>
+        {categories && (
           <SegmentedControl
             value={selectedCategory}
             onChange={setSelectedCategory}
@@ -61,11 +65,16 @@ export default function Page() {
             ]}
             color="dark"
           />
-        </div>
-      )}
+        )}
+        <Select
+          data={FILTERS}
+          value={selectedFilter}
+          onChange={setSelectedFilter}
+        />
+      </FilterContainer>
       <Grid>
         {products?.map((item) => (
-          <ImageContainer key={item.id}>
+          <div key={item.id}>
             <Image
               style={{ borderRadius: 12 }}
               src={item.image_url ?? ''}
@@ -76,11 +85,11 @@ export default function Page() {
             <p>{item.name}</p>
             <p>{item.price.toLocaleString()}원</p>
             <NameBox>{CATEGORY_MAP[item.category_id - 1]}</NameBox>
-          </ImageContainer>
+          </div>
         ))}
       </Grid>
       <Pagination
-        style={{ display: 'flex', justifyContent: 'center' }}
+        style={{ display: 'flex', justifyContent: 'center', marginTop: 25 }}
         value={activePage}
         onChange={setPage}
         total={total}
@@ -93,12 +102,15 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 36px;
 `
+const FilterContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+`
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-`
-const ImageContainer = styled.div`
-  margin-bottom: 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 `
 const NameBox = styled.span`
   color: gray;
