@@ -4,9 +4,11 @@ import React from 'react'
 import Image from 'next/image'
 import { styled } from 'styled-components'
 import { ProductDto } from '../types/products/products.dto'
-import { Pagination, SegmentedControl, Select } from '@mantine/core'
+import { Input, Pagination, SegmentedControl, Select } from '@mantine/core'
 import { CATEGORY_MAP, FILTERS, TAKE } from '@/constants/products'
 import { CategoryDto } from '../types/category/category.dto'
+import useDebounce from '@/hooks/useDebounce'
+import NotFoundPage from './not-found'
 
 export default function Page() {
   const [activePage, setPage] = React.useState<number>(1)
@@ -17,6 +19,8 @@ export default function Page() {
   const [selectedFilter, setSelectedFilter] = React.useState<string | null>(
     FILTERS[0].value,
   )
+  const [keyword, setKeyword] = React.useState('')
+  const debouncedKeyword = useDebounce<string>(keyword)
 
   React.useEffect(() => {
     fetch(`/api/categories`)
@@ -29,11 +33,12 @@ export default function Page() {
       method: 'POST',
       body: JSON.stringify({
         category: Number(selectedCategory),
+        keyword: debouncedKeyword,
       }),
     })
       .then((res) => res.json())
       .then((data) => setTotal(Math.ceil(data / TAKE)))
-  }, [selectedCategory])
+  }, [debouncedKeyword, selectedCategory])
 
   React.useEffect(() => {
     const skip = TAKE * (activePage - 1)
@@ -44,13 +49,23 @@ export default function Page() {
         take: Number(`${TAKE}`),
         category: Number(selectedCategory),
         orderBy: selectedFilter,
+        keyword: debouncedKeyword,
       }),
     })
       .then((res) => res.json())
       .then((data) => setProducts(data))
-  }, [activePage, selectedCategory, selectedFilter])
+  }, [activePage, debouncedKeyword, selectedCategory, selectedFilter])
+  console.log('products', products)
   return (
     <Container>
+      <Input
+        style={{ marginBottom: 16 }}
+        placeholder="Search"
+        value={keyword}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setKeyword(e.target.value)
+        }}
+      />
       <FilterContainer>
         {categories && (
           <SegmentedControl
@@ -72,22 +87,26 @@ export default function Page() {
           onChange={setSelectedFilter}
         />
       </FilterContainer>
-      <Grid>
-        {products?.map((item) => (
-          <div key={item.id}>
-            <Image
-              style={{ borderRadius: 12 }}
-              src={item.image_url ?? ''}
-              width={300}
-              height={200}
-              alt="image"
-            />
-            <p>{item.name}</p>
-            <p>{item.price.toLocaleString()}원</p>
-            <NameBox>{CATEGORY_MAP[item.category_id - 1]}</NameBox>
-          </div>
-        ))}
-      </Grid>
+      {products.length > 0 ? (
+        <Grid>
+          {products?.map((item) => (
+            <div key={item.id}>
+              <Image
+                style={{ borderRadius: 12 }}
+                src={item.image_url ?? ''}
+                width={265}
+                height={331}
+                alt="image"
+              />
+              <p>{item.name}</p>
+              <p>{item.price.toLocaleString()}원</p>
+              <NameBox>{CATEGORY_MAP[item.category_id - 1]}</NameBox>
+            </div>
+          ))}
+        </Grid>
+      ) : (
+        <NotFoundPage />
+      )}
       <Pagination
         style={{ display: 'flex', justifyContent: 'center', marginTop: 25 }}
         value={activePage}
@@ -105,7 +124,7 @@ const Container = styled.div`
 const FilterContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 `
 const Grid = styled.div`
   display: grid;

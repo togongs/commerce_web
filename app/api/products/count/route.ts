@@ -9,15 +9,26 @@ export async function GET(request: Request, params: { id: number }) {
 }
 export async function POST(request: Request, params: { id: number }) {
   const body = await request.json()
-  const { category } = body
-  const where =
-    category && category !== -1
+  const { category, keyword } = body
+  const keywordCondition =
+    keyword && keyword !== ''
       ? {
-          where: {
-            category_id: category,
+          name: {
+            contains: keyword,
           },
         }
       : undefined
-  const response = await prisma.products.count(where)
+  const where =
+    category && category !== -1
+      ? {
+          category_id: category,
+          ...keywordCondition,
+        }
+      : keywordCondition
+        ? keywordCondition
+        : undefined
+  const response = await prisma.products.count({
+    where: where,
+  })
   return NextResponse.json(response)
 }

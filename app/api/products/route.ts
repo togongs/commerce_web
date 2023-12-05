@@ -25,8 +25,7 @@ export async function GET(request: Request, params: { id: number }) {
 
 export async function POST(request: Request) {
   const body = await request.json()
-  const { id, contents, skip, take, category, orderBy } = body
-  console.log('category', category)
+  const { id, contents, skip, take, category, orderBy, keyword } = body
   if (id || contents) {
     try {
       const response = await prisma.products.update({
@@ -43,14 +42,23 @@ export async function POST(request: Request) {
       throw new Error(error)
     }
   } else {
-    const where =
-      category && category !== -1
+    const keywordCondition =
+      keyword && keyword !== ''
         ? {
-            where: {
-              category_id: category,
+            name: {
+              contains: keyword,
             },
           }
         : undefined
+    const where =
+      category && category !== -1
+        ? {
+            category_id: category,
+            ...keywordCondition,
+          }
+        : keywordCondition
+          ? keywordCondition
+          : undefined
 
     const orderByCondition = orderBy
       ? orderBy === 'latest'
@@ -63,7 +71,7 @@ export async function POST(request: Request) {
     const response = await prisma.products.findMany({
       skip,
       take,
-      ...where,
+      where: where,
       ...orderByCondition,
     })
     return NextResponse.json(response)
