@@ -10,8 +10,10 @@ import { CategoryDto } from '../types/category/category.dto'
 import useDebounce from '@/hooks/useDebounce'
 import NotFoundPage from './not-found'
 import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 
 export default function Page() {
+  const { data: session } = useSession()
   const [activePage, setPage] = React.useState<number>(1)
   const [selectedCategory, setSelectedCategory] = React.useState<string>('-1')
   const [selectedFilter, setSelectedFilter] = React.useState<string | null>(
@@ -64,6 +66,7 @@ export default function Page() {
   )
   return (
     <Container>
+      <p>안녕하세요. {session?.user?.name}님</p>
       <Input
         style={{ marginBottom: 16 }}
         placeholder="Search"
