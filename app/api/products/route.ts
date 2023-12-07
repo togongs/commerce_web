@@ -3,7 +3,10 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function GET(request: Request, params: { id: number }) {
+export async function GET(
+  request: Request,
+  params: { id: number },
+): Promise<void | Response> {
   const { id } = params
   if (params.id) {
     try {
@@ -12,7 +15,7 @@ export async function GET(request: Request, params: { id: number }) {
           id: id,
         },
       })
-      if (!response) return null
+      if (!response) return new Response(null, { status: 404 })
       return NextResponse.json(response)
     } catch (error: any) {
       throw new Error(error)
