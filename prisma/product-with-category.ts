@@ -443,7 +443,7 @@ async function main() {
         name: c,
       },
     })
-    console.log(`Upsert category id: ${product.id}`)
+    // console.log(`Upsert category id: ${product.id}`)
   })
 
   await prisma.products.deleteMany({})
@@ -452,7 +452,7 @@ async function main() {
     const product = await prisma.products.create({
       data: p,
     })
-    console.log(`Created id: ${product.id}`)
+    // console.log(`Created id: ${product.id}`)
   }
 }
 

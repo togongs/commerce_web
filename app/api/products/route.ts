@@ -25,7 +25,6 @@ export async function GET(request: Request, params: { id: number }) {
 
 export async function POST(request: Request) {
   const body = await request.json()
-  console.log('body', body)
   const { id, contents, skip, take, category, orderBy, keyword } = body
   if (id || contents) {
     try {

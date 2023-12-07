@@ -37,10 +37,9 @@ export default function Page() {
           category: Number(selectedCategory),
           keyword: debouncedKeyword,
         }),
-      }).then((res) => res.json()),
-    {
-      select: (data) => Math.ceil(data / TAKE),
-    },
+      })
+        .then((res) => res.json())
+        .then((data) => Math.ceil(data / TAKE)),
   )
 
   const { data: products } = useQuery<any, any, ProductDto.Response[]>(
@@ -139,5 +138,5 @@ const Grid = styled.div`
   gap: 20px;
 `
 const NameBox = styled.span`
-  color: gray;
+  color: #999;
 `

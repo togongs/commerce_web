@@ -25,7 +25,6 @@ async function main() {
     const product = await prisma.products.create({
       data: p,
     })
-    console.log('product???', `${product.id}`)
   }
 }
 
