@@ -65,7 +65,13 @@ export default function Page() {
       }).then((res) => res.json()),
   )
   return (
-    <Container>
+    <div
+      style={{
+        width: 1200,
+        margin: '0 auto',
+        padding: 36,
+      }}
+    >
       <p>안녕하세요. {session?.user?.name}님</p>
       <Input
         style={{ marginBottom: 16 }}
@@ -75,7 +81,13 @@ export default function Page() {
           setKeyword(e.target.value)
         }}
       />
-      <FilterContainer>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: 16,
+        }}
+      >
         {categories && (
           <SegmentedControl
             value={selectedCategory}
@@ -95,9 +107,15 @@ export default function Page() {
           value={selectedFilter}
           onChange={setSelectedFilter}
         />
-      </FilterContainer>
+      </div>
       {products && products.length > 0 ? (
-        <Grid>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 20,
+          }}
+        >
           {products?.map((item) => (
             <div key={item.id}>
               <Image
@@ -112,7 +130,7 @@ export default function Page() {
               <NameBox>{CATEGORY_MAP[item.category_id - 1]}</NameBox>
             </div>
           ))}
-        </Grid>
+        </div>
       ) : (
         <NotFoundPage />
       )}
@@ -122,11 +140,11 @@ export default function Page() {
         onChange={setPage}
         total={total ?? 0}
       />
-    </Container>
+    </div>
   )
 }
 const Container = styled.div`
-  max-width: 1200px;
+  width: 1200px;
   margin: 0 auto;
   padding: 36px;
 `
