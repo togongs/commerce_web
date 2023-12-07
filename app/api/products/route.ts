@@ -39,7 +39,7 @@ export async function POST(request: Request) {
           contents: contents,
         },
       })
-      if (!response) return null
+      if (!response) return new Response(null, { status: 404 })
       return NextResponse.json(response)
     } catch (error: any) {
       throw new Error(error)
