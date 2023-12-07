@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { PrismaClient } from '@prisma/client'
-import { CLIENT_ID, CLIENT_SECRET } from '@/constants/googleAuth'
+import { CLIENT_ID } from '@/constants/googleAuth'
 
 const prisma = new PrismaClient()
 
@@ -11,7 +11,7 @@ const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
+      clientSecret: process.env.SECRET as string,
     }),
   ],
   session: {
