@@ -6,7 +6,7 @@ import { CLIENT_ID, CLIENT_SECRET } from '@/constants/googleAuth'
 
 const prisma = new PrismaClient()
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -17,6 +17,12 @@ const authOptions: NextAuthOptions = {
   session: {
     strategy: 'database',
     maxAge: 1 * 24 * 60 * 60, // 1 days
+  },
+  callbacks: {
+    async session({ session, user }: any) {
+      session.id = user.id
+      return session
+    },
   },
 }
 

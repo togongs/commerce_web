@@ -11,8 +11,10 @@ import useDebounce from '@/hooks/useDebounce'
 import NotFoundPage from './not-found'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function Page() {
+  const router = useRouter()
   const { data: session } = useSession()
   const [activePage, setPage] = React.useState<number>(1)
   const [selectedCategory, setSelectedCategory] = React.useState<string>('-1')
@@ -117,7 +119,11 @@ export default function Page() {
           }}
         >
           {products?.map((item) => (
-            <div key={item.id}>
+            <div
+              key={item.id}
+              style={{ cursor: 'pointer' }}
+              onClick={() => router.push(`/products/${item.id}`)}
+            >
               <Image
                 style={{ borderRadius: 12 }}
                 src={item.image_url ?? ''}
