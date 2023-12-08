@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 export async function GET(
   request: Request,
   params: { id: number },
-): Promise<void | Response> {
+): Promise<Response> {
   const { id } = params
   if (params.id) {
     try {

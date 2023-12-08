@@ -30,7 +30,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
   const session: Session | null = await getServerSession(authOptions)
   const body = await request.json()
   const { productId } = body
@@ -64,10 +64,9 @@ export async function POST(request: Request) {
         productIds: newWishlist.join(','),
       },
     })
-
-    if (!response) return new Response(null, { status: 404 })
+    // if (!response) return new Response(null, { status: 404 })
     return NextResponse.json(response?.productIds.split(','))
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    throw new Error(error)
   }
 }
