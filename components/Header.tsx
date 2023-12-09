@@ -25,7 +25,7 @@ export default function Header() {
               src={session.user?.image!}
               width={30}
               height={30}
-              style={{ borderRadius: '50%', width: 30, height: 30 }}
+              style={{ borderRadius: '50%', width: 30, height: 30.1 }}
               alt="profile"
               onClick={() => router.push('/my')}
             />
