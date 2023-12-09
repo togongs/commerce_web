@@ -1,0 +1,44 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 36px;
+  .imageContainer {
+    display: flex;
+    gap: 40px;
+    .image {
+      width: 100%;
+      height: auto;
+    }
+    .infoContainer {
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      & > span {
+        font-size: 22px;
+        color: #999;
+      }
+      .name {
+        font-weight: 600;
+        font-size: 32px;
+      }
+      .price {
+        color: #333;
+        font-weight: 500;
+      }
+      .normalBtn {
+        background-color: lightgray;
+      }
+      .redBtn {
+        color: red;
+      }
+      .date {
+        color: #999;
+      }
+    }
+  }
+  .subImageContainer {
+    display: flex;
+    margin-top: 16px;
+  }
+}

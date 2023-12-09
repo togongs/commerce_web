@@ -23,7 +23,6 @@ export async function GET() {
       },
     })
     if (!response) return new Response(null, { status: 404 })
-    console.log('response', response)
     return NextResponse.json(response?.productIds.split(','))
   } else {
     return new Response(null, { status: 200 })
@@ -34,7 +33,6 @@ export async function POST(request: Request): Promise<Response> {
   const session: Session | null = await getServerSession(authOptions)
   const body = await request.json()
   const { productId } = body
-  console.log('productId', productId)
   try {
     const wishlist = await prisma.wishlist.findUnique({
       where: {
@@ -64,7 +62,6 @@ export async function POST(request: Request): Promise<Response> {
         productIds: newWishlist.join(','),
       },
     })
-    // if (!response) return new Response(null, { status: 404 })
     return NextResponse.json(response?.productIds.split(','))
   } catch (error: any) {
     throw new Error(error)

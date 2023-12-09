@@ -2,7 +2,6 @@ import React, { Dispatch, SetStateAction } from 'react'
 import dynamic from 'next/dynamic'
 import { EditorProps } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import { styled } from 'styled-components'
 import { EditorState } from 'draft-js'
 import Button from './Button'
 
@@ -23,7 +22,7 @@ export default function CustomEditor({
   onEditorStateChange?: Dispatch<SetStateAction<EditorState | undefined>>
 }) {
   return (
-    <Wrapper>
+    <div style={{ padding: 16 }}>
       <Editor
         readOnly={readOnly}
         editorState={editorState}
@@ -40,10 +39,6 @@ export default function CustomEditor({
         onEditorStateChange={onEditorStateChange}
       />
       {!readOnly && <Button onClick={onSave}>Save</Button>}
-    </Wrapper>
+    </div>
   )
 }
-
-const Wrapper = styled.div`
-  padding: 16px;
-`

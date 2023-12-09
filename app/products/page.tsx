@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Image from 'next/image'
-import { styled } from 'styled-components'
 import { ProductDto } from '../types/products/products.dto'
 import { Input, Pagination, SegmentedControl, Select } from '@mantine/core'
 import { CATEGORY_MAP, FILTERS, TAKE } from '@/constants/products'
@@ -12,6 +11,7 @@ import NotFoundPage from './not-found'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import styles from './page.module.scss'
 
 export default function Page() {
   const router = useRouter()
@@ -67,29 +67,17 @@ export default function Page() {
       }).then((res) => res.json()),
   )
   return (
-    <div
-      style={{
-        width: 1200,
-        margin: '0 auto',
-        padding: 36,
-      }}
-    >
+    <div className={styles.container}>
       <p>안녕하세요. {session?.user?.name}님</p>
       <Input
-        style={{ marginBottom: 16 }}
+        className={styles.input}
         placeholder="Search"
         value={keyword}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setKeyword(e.target.value)
         }}
       />
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: 16,
-        }}
-      >
+      <div className={styles.tabContainer}>
         {categories && (
           <SegmentedControl
             value={selectedCategory}
@@ -111,21 +99,14 @@ export default function Page() {
         />
       </div>
       {products && products.length > 0 ? (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 20,
-          }}
-        >
+        <div className={styles.imageContainer}>
           {products?.map((item) => (
             <div
               key={item.id}
-              style={{ cursor: 'pointer' }}
               onClick={() => router.push(`/products/${item.id}`)}
             >
               <Image
-                style={{ borderRadius: 12 }}
+                className={styles.image}
                 src={item.image_url ?? ''}
                 width={265}
                 height={331}
@@ -133,7 +114,7 @@ export default function Page() {
               />
               <p>{item.name}</p>
               <p>{item.price.toLocaleString()}원</p>
-              <NameBox>{CATEGORY_MAP[item.category_id - 1]}</NameBox>
+              <span>{CATEGORY_MAP[item.category_id - 1]}</span>
             </div>
           ))}
         </div>
@@ -141,7 +122,7 @@ export default function Page() {
         <NotFoundPage />
       )}
       <Pagination
-        style={{ display: 'flex', justifyContent: 'center', marginTop: 25 }}
+        className={styles.pagination}
         value={activePage}
         onChange={setPage}
         total={total ?? 0}
@@ -149,21 +130,3 @@ export default function Page() {
     </div>
   )
 }
-const Container = styled.div`
-  width: 1200px;
-  margin: 0 auto;
-  padding: 36px;
-`
-const FilterContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
-`
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-`
-const NameBox = styled.span`
-  color: #999;
-`

@@ -1,5 +1,5 @@
-import React from 'react'
+import { redirect } from 'next/navigation'
 
 export default async function Home() {
-  return <div>test</div>
+  return redirect(`/products`)
 }

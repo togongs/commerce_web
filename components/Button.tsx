@@ -1,9 +1,6 @@
-import { styled } from 'styled-components'
+import React from 'react'
+import styles from './Button.module.scss'
 
-const Button = styled.button`
-  padding: 16px;
-  border-radius: 8px;
-  background-color: hotpink;
-`
-
-export default Button
+export default function Button({ ...props }) {
+  return <button {...props} className={styles.button} />
+}

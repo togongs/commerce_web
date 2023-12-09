@@ -12,6 +12,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@mantine/core'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import styles from './Form.module.scss'
 
 interface FormProps {
   product: ProductDto.Response
@@ -64,78 +65,58 @@ export default function Form({ product }: FormProps) {
   const isWished = wishlist ? wishlist.includes(String(product.id)) : false
   //   console.log('wishlist', wishlist)
   return (
-    <>
-      <div style={{ width: 1000, margin: '0 auto', padding: 36 }}>
-        <div style={{ display: 'flex', gap: 40 }}>
-          <Carousel
-            animation="fade"
-            autoplay
-            withoutControls
-            wrapAround
-            speed={10}
-            slideIndex={index}
-          >
-            <Image
-              key={`Product-Detail=${product.id}`}
-              src={product.image_url}
-              style={{ width: '100%', height: '100%' }}
-              alt="image"
-              width={600}
-              height={600}
-            />
-          </Carousel>
-          <div
-            style={{
-              minWidth: 180,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 30,
+    <div className={styles.container}>
+      <div className={styles.imageContainer}>
+        <Carousel
+          animation="fade"
+          autoplay
+          withoutControls
+          wrapAround
+          speed={10}
+          slideIndex={index}
+        >
+          <Image
+            key={`Product-Detail=${product.id}`}
+            src={product.image_url}
+            className={styles.image}
+            alt="image"
+            width={600}
+            height={400}
+          />
+        </Carousel>
+        <div className={styles.infoContainer}>
+          <span>{CATEGORY_MAP[product.category_id - 1]}</span>
+          <div className={styles.name}>{product.name}</div>
+          <p className={styles.price}>{product.price.toLocaleString()}원</p>
+          <Button
+            className={isWished ? styles.redBtn : styles.normalBtn}
+            radius="xl"
+            size="md"
+            onClick={() => {
+              if (session === null) {
+                alert('로그인이 필요합니다.')
+                return router.push('/auth/login')
+              }
+              return mutation.mutate(String(product.id))
             }}
           >
-            <p style={{ color: '#999' }}>
-              {CATEGORY_MAP[product.category_id - 1]}
-            </p>
-            <div
-              style={{
-                fontWeight: 600,
-                fontSize: 32,
-              }}
-            >
-              {product.name}
-            </div>
-            <p style={{ color: '#333', fontWeight: 500 }}>
-              {product.price.toLocaleString()}원
-            </p>
-            <Button
-              style={{ backgroundColor: isWished ? 'red' : 'lightgray' }}
-              radius="xl"
-              size="md"
-              onClick={() => {
-                if (session === null) {
-                  alert('로그인이 필요합니다.')
-                  return router.push('/auth/login')
-                }
-                return mutation.mutate(String(product.id))
-              }}
-            >
-              찜하기
-            </Button>
-            <p style={{ color: '#999' }}>
-              등록: {dayjs(product.createdAt).format('YYYY. MM. DD')}
-            </p>
-          </div>
+            찜하기
+          </Button>
+          <p className={styles.date}>
+            등록: {dayjs(product.createdAt).format('YYYY. MM. DD')}
+          </p>
         </div>
-        <div style={{ display: 'flex', marginTop: 16 }}>
-          {[product.image_url].map((image, idx) => (
-            <div key={idx} onClick={() => setIndex(idx)}>
-              <Image src={image} alt="image" width={100} height={100} />
-            </div>
-          ))}
-        </div>
-        {editorState != null && (
-          <CustomEditor editorState={editorState} readOnly />
-        )}
       </div>
-    </>
+      <div className={styles.subImageContainer}>
+        {[product.image_url].map((image, idx) => (
+          <div key={idx} onClick={() => setIndex(idx)}>
+            <Image src={image} alt="image" width={100} height={100} />
+          </div>
+        ))}
+      </div>
+      {editorState != null && (
+        <CustomEditor editorState={editorState} readOnly />
+      )}
+    </div>
   )
 }

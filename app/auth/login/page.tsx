@@ -1,16 +1,9 @@
 import GoogleLogin from '@/components/GoogleLogin'
+import styles from './page.module.scss'
 
 export default function Page() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        width: '100vh',
-        height: '100vh',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div className={styles.container}>
       <GoogleLogin />
     </div>
   )
