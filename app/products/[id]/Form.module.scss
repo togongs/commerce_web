@@ -1,7 +1,6 @@
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 36px;
   .imageContainer {
     display: flex;
     gap: 40px;
@@ -10,7 +9,7 @@
       height: auto;
     }
     .infoContainer {
-      min-width: 180px;
+      min-width: 350px;
       display: flex;
       flex-direction: column;
       gap: 30px;

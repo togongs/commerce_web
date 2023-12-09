@@ -13,6 +13,7 @@ import { Button } from '@mantine/core'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import styles from './Form.module.scss'
+import { IconHeart, IconHeartbeat } from '@tabler/icons-react'
 
 interface FormProps {
   product: ProductDto.Response
@@ -80,8 +81,8 @@ export default function Form({ product }: FormProps) {
             src={product.image_url}
             className={styles.image}
             alt="image"
-            width={600}
-            height={400}
+            width={620}
+            height={780}
           />
         </Carousel>
         <div className={styles.infoContainer}>
@@ -89,7 +90,19 @@ export default function Form({ product }: FormProps) {
           <div className={styles.name}>{product.name}</div>
           <p className={styles.price}>{product.price.toLocaleString()}원</p>
           <Button
-            className={isWished ? styles.redBtn : styles.normalBtn}
+            leftSection={
+              isWished ? (
+                <IconHeart size={20} stroke={1.5} />
+              ) : (
+                <IconHeartbeat size={20} stroke={1.5} />
+              )
+            }
+            style={{
+              backgroundColor: isWished ? 'red' : 'grey',
+            }}
+            styles={{
+              root: { paddingRight: 14, height: 48 },
+            }}
             radius="xl"
             size="md"
             onClick={() => {
@@ -110,7 +123,7 @@ export default function Form({ product }: FormProps) {
       <div className={styles.subImageContainer}>
         {[product.image_url].map((image, idx) => (
           <div key={idx} onClick={() => setIndex(idx)}>
-            <Image src={image} alt="image" width={100} height={100} />
+            <Image src={image} alt="image" width={155} height={195} />
           </div>
         ))}
       </div>

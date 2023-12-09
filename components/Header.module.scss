@@ -1,0 +1,15 @@
+.header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 20px;
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    .rightContainer {
+      display: flex;
+      gap: 15px;
+    }
+  }
+}

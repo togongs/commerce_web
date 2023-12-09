@@ -3,7 +3,12 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['picsum.photos', 'raw.githubusercontent.com', 'cdn.shopify.com'],
+    domains: [
+      'picsum.photos',
+      'raw.githubusercontent.com',
+      'cdn.shopify.com',
+      'lh3.googleusercontent.com',
+    ],
   },
   env: {
     API_URL: 'https://commerce-web-ten.vercel.app',

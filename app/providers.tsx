@@ -4,8 +4,7 @@ import React from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SessionProvider } from 'next-auth/react'
 import { Session } from 'next-auth'
-// import { GoogleOAuthProvider } from '@react-oauth/google'
-// import { CLIENT_ID } from '@/constants/googleAuth'
+import Header from '@/components/Header'
 
 export interface ProvidersProps {
   children?: React.ReactNode
@@ -19,10 +18,11 @@ const queryClient = new QueryClient({
 })
 export default function Providers({ children, session }: ProvidersProps) {
   return (
-    // <GoogleOAuthProvider clientId={CLIENT_ID}>
     <SessionProvider session={session}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <Header />
+        {children}
+      </QueryClientProvider>
     </SessionProvider>
-    // </GoogleOAuthProvider>
   )
 }
