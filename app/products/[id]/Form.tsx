@@ -13,7 +13,8 @@ import { Button } from '@mantine/core'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import styles from './Form.module.scss'
-import { IconHeart, IconHeartbeat } from '@tabler/icons-react'
+import { IconHeart, IconHeartbeat, IconShoppingCart } from '@tabler/icons-react'
+import CountControl from '@/components/CountControl'
 
 interface FormProps {
   product: ProductDto.Response
@@ -22,7 +23,8 @@ interface FormProps {
 export default function Form({ product }: FormProps) {
   const { data: session } = useSession()
   const router = useRouter()
-  const [index, setIndex] = React.useState(0)
+  const [index, setIndex] = React.useState<number>(0)
+  const [quantity, setQuantity] = React.useState<number>(0)
   const editorState = React.useMemo(
     () =>
       product?.contents
@@ -89,32 +91,56 @@ export default function Form({ product }: FormProps) {
           <span>{CATEGORY_MAP[product.category_id - 1]}</span>
           <div className={styles.name}>{product.name}</div>
           <p className={styles.price}>{product.price.toLocaleString()}원</p>
-          <Button
-            leftSection={
-              isWished ? (
-                <IconHeart size={20} stroke={1.5} />
-              ) : (
-                <IconHeartbeat size={20} stroke={1.5} />
-              )
-            }
-            style={{
-              backgroundColor: isWished ? 'red' : 'grey',
-            }}
-            styles={{
-              root: { paddingRight: 14, height: 48 },
-            }}
-            radius="xl"
-            size="md"
-            onClick={() => {
-              if (session === null) {
-                alert('로그인이 필요합니다.')
-                return router.push('/auth/login')
+          <CountControl quantity={quantity} setQuantity={setQuantity} />
+          <div className={styles.btnContainer}>
+            <Button
+              leftSection={<IconShoppingCart size={20} stroke={1.5} />}
+              style={{
+                backgroundColor: 'black',
+              }}
+              styles={{
+                root: { paddingRight: 14, height: 48 },
+              }}
+              radius="xl"
+              size="md"
+              onClick={(type) => {
+                if (session === null) {
+                  alert('로그인이 필요합니다.')
+                  return router.push('/auth/login')
+                }
+                alert('장바구니로 이동')
+                return router.push('/cart')
+              }}
+            >
+              장바구니
+            </Button>
+            <Button
+              leftSection={
+                isWished ? (
+                  <IconHeart size={20} stroke={1.5} />
+                ) : (
+                  <IconHeartbeat size={20} stroke={1.5} />
+                )
               }
-              return mutation.mutate(String(product.id))
-            }}
-          >
-            찜하기
-          </Button>
+              style={{
+                backgroundColor: isWished ? 'red' : 'grey',
+              }}
+              styles={{
+                root: { paddingRight: 14, height: 48 },
+              }}
+              radius="xl"
+              size="md"
+              onClick={() => {
+                if (session === null) {
+                  alert('로그인이 필요합니다.')
+                  return router.push('/auth/login')
+                }
+                return mutation.mutate(String(product.id))
+              }}
+            >
+              찜하기
+            </Button>
+          </div>
           <p className={styles.date}>
             등록: {dayjs(product.createdAt).format('YYYY. MM. DD')}
           </p>

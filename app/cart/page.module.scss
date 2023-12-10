@@ -1,0 +1,54 @@
+.container {
+  width: 1200px;
+  margin: 0 auto;
+  .table {
+    display: flex;
+    .leftContainer {
+      display: flex;
+      flex: 1;
+      .productContainer {
+        display: flex;
+        border-bottom: 1px solid #e6e6e6;
+        padding: 16px;
+        width: 100%;
+        .mid {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          margin-left: 16px;
+          .name {
+            font-weight: bold;
+            margin-bottom: 8px;
+          }
+          .price {
+            margin-bottom: auto;
+          }
+          .countContainer {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+          }
+        }
+        .priceContainer {
+          display: flex;
+          .sumPrice {
+            min-width: 85px;
+          }
+        }
+      }
+    }
+    .rightContainer {
+      min-width: 350px;
+      padding: 0 24px;
+      .pd {
+        padding: 12px;
+        border: 1px solid grey;
+        .row {
+          display: flex;
+          justify-content: space-between;
+          margin: 6px 0;
+        }
+      }
+    }
+  }
+}

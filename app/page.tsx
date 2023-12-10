@@ -16,7 +16,6 @@ import { IconSearch } from '@tabler/icons-react'
 
 export default function Home() {
   const router = useRouter()
-  const { data: session } = useSession()
   const [activePage, setPage] = React.useState<number>(1)
   const [selectedCategory, setSelectedCategory] = React.useState<string>('-1')
   const [selectedFilter, setSelectedFilter] = React.useState<string | null>(
