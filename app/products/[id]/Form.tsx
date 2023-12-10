@@ -108,7 +108,7 @@ export default function Form({ product }: FormProps) {
                   alert('로그인이 필요합니다.')
                   return router.push('/auth/login')
                 }
-                alert('장바구니로 이동')
+                alert('장바구니로 이동.')
                 return router.push('/cart')
               }}
             >
