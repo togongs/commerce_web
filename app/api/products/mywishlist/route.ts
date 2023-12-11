@@ -14,7 +14,7 @@ interface Session {
   }
 }
 
-export async function GET() {
+export async function GET(): Promise<Response> {
   const session: Session | null = await getServerSession(authOptions)
   const wishlist = await prisma.wishlist.findUnique({
     where: {
@@ -34,44 +34,5 @@ export async function GET() {
     })
     return NextResponse.json(response)
   }
-  return []
+  return new NextResponse(null, { status: 200 })
 }
-
-// export async function POST(request: Request): Promise<Response> {
-//   const session: Session | null = await getServerSession(authOptions)
-//   const body = await request.json()
-//   const { productId } = body
-//   try {
-//     const wishlist = await prisma.wishlist.findUnique({
-//       where: {
-//         userId: session?.id,
-//       },
-//     })
-//     const originWishlist =
-//       wishlist?.productIds != null && wishlist.productIds !== ''
-//         ? wishlist.productIds.split(',')
-//         : []
-
-//     const isWished = originWishlist.includes(productId)
-
-//     const newWishlist = isWished
-//       ? originWishlist.filter((id) => id !== productId)
-//       : [...originWishlist, productId]
-
-//     const response = await prisma.wishlist.upsert({
-//       where: {
-//         userId: session?.id,
-//       },
-//       update: {
-//         productIds: newWishlist.join(','),
-//       },
-//       create: {
-//         userId: session?.id as string,
-//         productIds: newWishlist.join(','),
-//       },
-//     })
-//     return NextResponse.json(response?.productIds.split(','))
-//   } catch (error: any) {
-//     throw new Error(error)
-//   }
-// }
