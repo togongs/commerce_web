@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, Dispatch, SetStateAction } from 'react'
 import {
   NumberInput,
   Group,
@@ -7,12 +7,11 @@ import {
 } from '@mantine/core'
 
 interface CountProps {
-  quantity: number
-  setQuantity: any
+  value: number
+  setValue: any
 }
 
-export default function CountControl({ quantity, setQuantity }: CountProps) {
-  const [value, setValue] = useState<number>(0)
+export default function CountControl({ value, setValue }: CountProps) {
   const handlers = useRef<NumberInputHandlers>()
 
   return (
@@ -28,7 +27,7 @@ export default function CountControl({ quantity, setQuantity }: CountProps) {
       <NumberInput
         hideControls
         value={value}
-        onChange={(val) => setValue(Number(val))}
+        onChange={setValue}
         handlersRef={handlers}
         max={200}
         min={0}

@@ -15,6 +15,8 @@ import { useSession } from 'next-auth/react'
 import styles from './Form.module.scss'
 import { IconHeart, IconHeartbeat, IconShoppingCart } from '@tabler/icons-react'
 import CountControl from '@/components/CountControl'
+import { CarttDto } from '@/app/types/cart/cart.dto'
+import { Cart } from '@prisma/client'
 
 interface FormProps {
   product: ProductDto.Response
@@ -25,6 +27,7 @@ export default function Form({ product }: FormProps) {
   const router = useRouter()
   const [index, setIndex] = React.useState<number>(0)
   const [quantity, setQuantity] = React.useState<number>(0)
+  console.log('quantity', quantity)
   const editorState = React.useMemo(
     () =>
       product?.contents
@@ -66,6 +69,18 @@ export default function Form({ product }: FormProps) {
     },
   )
   const isWished = wishlist ? wishlist.includes(String(product.id)) : false
+
+  const postCartMutation = useMutation<
+    unknown,
+    unknown,
+    Omit<CarttDto.Response, 'id' | 'userId'>, // id, userId는 db에서 생성
+    any
+  >((item) =>
+    fetch(`/api/cart`, {
+      method: 'POST',
+      body: JSON.stringify({ item }),
+    }).then((res) => res.json()),
+  )
   //   console.log('wishlist', wishlist)
   return (
     <div className={styles.container}>
@@ -91,13 +106,11 @@ export default function Form({ product }: FormProps) {
           <span>{CATEGORY_MAP[product.category_id - 1]}</span>
           <div className={styles.name}>{product.name}</div>
           <p className={styles.price}>{product.price.toLocaleString()}원</p>
-          <CountControl quantity={quantity} setQuantity={setQuantity} />
+          <CountControl value={quantity} setValue={setQuantity} />
           <div className={styles.btnContainer}>
             <Button
               leftSection={<IconShoppingCart size={20} stroke={1.5} />}
-              style={{
-                backgroundColor: 'black',
-              }}
+              className={styles.btn}
               styles={{
                 root: { paddingRight: 14, height: 48 },
               }}
@@ -108,7 +121,11 @@ export default function Form({ product }: FormProps) {
                   alert('로그인이 필요합니다.')
                   return router.push('/auth/login')
                 }
-                alert('장바구니로 이동.')
+                postCartMutation.mutate({
+                  productId: product.id,
+                  quantity: quantity,
+                  amount: product.price * quantity,
+                })
                 return router.push('/cart')
               }}
             >

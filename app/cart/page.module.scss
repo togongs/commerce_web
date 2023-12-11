@@ -9,8 +9,7 @@
   .table {
     display: flex;
     .leftContainer {
-      display: flex;
-      flex: 1;
+      width: 100%;
       .productContainer {
         display: flex;
         border-bottom: 1px solid #e6e6e6;
@@ -57,12 +56,35 @@
       .pd {
         padding: 18px;
         border: 1px solid lightgray;
+        > p {
+          font-size: 18px;
+          font-weight: 600;
+        }
         .row {
           display: flex;
           justify-content: space-between;
           margin: 10px 0;
+          .desc {
+            font-weight: 700;
+          }
+          .price {
+            font-weight: 600;
+            color: red;
+          }
+        }
+        .btn {
+          background-color: black;
+          width: 100%;
+          margin-top: 5px;
         }
       }
+    }
+  }
+  .recommend {
+    margin-top: 100px;
+    .title {
+      font-weight: 600;
+      margin-bottom: 12px;
     }
   }
   .imageContainer {

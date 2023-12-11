@@ -7,9 +7,17 @@
     justify-content: space-between;
     align-items: center;
     height: 50px;
+    .icon {
+      height: 30px;
+    }
     .rightContainer {
       display: flex;
       gap: 15px;
+      .image {
+        border-radius: 50%;
+        width: 30;
+        height: 30;
+      }
     }
   }
 }

@@ -10,10 +10,21 @@ import { useQuery } from '@tanstack/react-query'
 import { ProductDto } from '../types/products/products.dto'
 import { useRouter } from 'next/navigation'
 import { CATEGORY_MAP } from '@/constants/products'
+import { CarttDto } from '../types/cart/cart.dto'
+import CartItem from './CartItem'
+
+interface CartItem extends CarttDto.Response {
+  name: string
+  price: number
+  image_url: string
+}
 
 export default function Page() {
   const router = useRouter()
-  const [quantity, setQuantity] = React.useState<number>(0)
+  const { data } = useQuery<{ items: CartItem[] }, any, CartItem[]>(
+    [`/api/cart`],
+    () => fetch(`/api/cart`).then((res) => res.json()),
+  )
 
   const { data: products } = useQuery<any, any, ProductDto.Response[]>(
     [`/api/products`],
@@ -26,70 +37,45 @@ export default function Page() {
         }),
       }).then((res) => res.json()),
   )
-  // console.log('products', products)
+  const dilveryAmount = data && data.length > 0 ? 5000 : 0
+  const discountAmount = 0
+  const price = React.useMemo(() => {
+    return (
+      data?.map((item) => item.amount).reduce((prev, curr) => prev + curr, 0) ??
+      0
+    )
+  }, [data])
+  console.log('data', data)
   return (
     <div className={styles.container}>
-      <p className={styles.title}>Cart (2)</p>
+      <p className={styles.title}>Cart ({data?.length ?? 0})</p>
       <div className={styles.table}>
         <div className={styles.leftContainer}>
-          <div className={styles.productContainer}>
-            <Image
-              className={styles.image}
-              src={
-                'https://cdn.shopify.com/s/files/1/0282/5850/products/footwear_jordan_aj-1-mid-se-craft_DM9652-100.view_1_720x.jpg'
-              }
-              width={230}
-              height={230}
-              alt="image"
-              // onClick={() => router.psuh(`/products/${}`)}
-            />
-            <div className={styles.mid}>
-              <span className={styles.name}>신발</span>
-              <span className={styles.price}>가격: 20000 원</span>
-              <div className={styles.countContainer}>
-                <CountControl quantity={quantity} setQuantity={setQuantity} />
-                <IconRefresh
-                  onClick={() => {
-                    alert('장바구니 수정')
-                  }}
-                />
-              </div>
-            </div>
-            <div className={styles.priceContainer}>
-              <span className={styles.sumPrice}>40000 원</span>
-              <IconX
-                onClick={() => {
-                  alert('장바구니 삭제')
-                }}
-              />
-            </div>
-          </div>
+          {data?.map((item) => <CartItem {...item} key={item.id} />)}
         </div>
         <div className={styles.rightContainer}>
           <div className={styles.pd}>
-            <p>Info</p>
+            <p>결제정보</p>
             <div className={styles.row}>
               <span>금액</span>
-              <span>0 원</span>
+              <span>{price.toLocaleString()} 원</span>
             </div>
             <div className={styles.row}>
               <span>배송비</span>
-              <span>0 원</span>
+              <span>{dilveryAmount.toLocaleString()} 원</span>
             </div>
             <div className={styles.row}>
               <span>할인 금액</span>
-              <span>0 원</span>
+              <span>{discountAmount.toLocaleString()} 원</span>
             </div>
             <div className={styles.row}>
-              <span style={{ fontWeight: 700 }}>결제 금액</span>
-              <span style={{ fontWeight: 700, color: 'red' }}>0 원</span>
+              <span className={styles.desc}>결제 금액</span>
+              <span className={styles.price}>
+                {(price - dilveryAmount - discountAmount).toLocaleString()} 원
+              </span>
             </div>
             <Button
-              style={{
-                backgroundColor: 'black',
-                width: '100%',
-                marginTop: 5,
-              }}
+              className={styles.btn}
               styles={{
                 root: { height: 48 },
               }}
@@ -104,8 +90,8 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div style={{ marginTop: 100 }}>
-        <p style={{ fontWeight: 600, marginBottom: 12 }}>추천상품</p>
+      <div className={styles.recommend}>
+        <p className={styles.title}>추천상품</p>
         {products && products.length > 0 ? (
           <div className={styles.imageContainer}>
             {products?.map((item) => (

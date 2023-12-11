@@ -18,30 +18,28 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <IconHome style={{ height: 30 }} onClick={() => router.push('/')} />
+        <IconHome className={styles.icon} onClick={() => router.push('/')} />
         <div className={styles.rightContainer}>
           <IconHeart
-            style={{ height: 30 }}
-            className={styles.cartBtn}
+            className={styles.icon}
             onClick={() => router.push('/wishlist')}
           />
           <IconShoppingCart
-            style={{ height: 30 }}
-            className={styles.cartBtn}
+            className={styles.icon}
             onClick={() => router.push('/cart')}
           />
           {session ? (
             <Image
+              className={styles.image}
               src={session.user?.image!}
               width={30}
               height={30}
-              style={{ borderRadius: '50%', width: 30, height: 30.1 }}
               alt="profile"
               onClick={() => router.push('/my')}
             />
           ) : (
             <IconUser
-              style={{ height: 30 }}
+              className={styles.icon}
               onClick={() => router.push('/auth/login')}
             />
           )}
