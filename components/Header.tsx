@@ -1,7 +1,12 @@
 'use client'
 
 import React from 'react'
-import { IconHome, IconShoppingCart, IconUser } from '@tabler/icons-react'
+import {
+  IconHeart,
+  IconHome,
+  IconShoppingCart,
+  IconUser,
+} from '@tabler/icons-react'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import styles from './Header.module.scss'
@@ -15,6 +20,11 @@ export default function Header() {
       <div className={styles.container}>
         <IconHome style={{ height: 30 }} onClick={() => router.push('/')} />
         <div className={styles.rightContainer}>
+          <IconHeart
+            style={{ height: 30 }}
+            className={styles.cartBtn}
+            onClick={() => router.push('/wishlist')}
+          />
           <IconShoppingCart
             style={{ height: 30 }}
             className={styles.cartBtn}

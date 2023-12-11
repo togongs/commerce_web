@@ -1,6 +1,11 @@
 .container {
   width: 1200px;
   margin: 0 auto;
+  .title {
+    margin-top: 30px;
+    margin-bottom: 12px;
+    font-size: 28px;
+  }
   .table {
     display: flex;
     .leftContainer {
@@ -11,10 +16,19 @@
         border-bottom: 1px solid #e6e6e6;
         padding: 16px;
         width: 100%;
+        .image {
+          width: 230px;
+          height: 230px;
+          object-fit: cover;
+        }
+        img {
+          width: 100%;
+          height: auto;
+        }
         .mid {
           display: flex;
           flex-direction: column;
-          width: 100%;
+          flex: 1;
           margin-left: 16px;
           .name {
             font-weight: bold;
@@ -41,14 +55,43 @@
       min-width: 350px;
       padding: 0 24px;
       .pd {
-        padding: 12px;
-        border: 1px solid grey;
+        padding: 18px;
+        border: 1px solid lightgray;
         .row {
           display: flex;
           justify-content: space-between;
-          margin: 6px 0;
+          margin: 10px 0;
         }
       }
+    }
+  }
+  .imageContainer {
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    .image {
+      border-radius: 12px;
+      cursor: pointer;
+      width: 200px;
+      height: 200px;
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+    div > span {
+      color: #999;
+    }
+  }
+  .notFoundContainer {
+    h2 {
+      text-align: center;
+      font-size: 24px;
+      color: #333;
+      font-weight: 400;
+      margin-bottom: 20px;
+      padding-top: 20px;
     }
   }
 }

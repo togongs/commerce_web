@@ -1,0 +1,41 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  .title {
+    margin-top: 30px;
+    margin-bottom: 12px;
+    font-size: 28px;
+  }
+  .imageContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    .box {
+      margin: auto;
+
+      .image {
+        border-radius: 12px;
+        cursor: pointer;
+        width: 320px;
+        height: 420px;
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+    div > span {
+      color: #999;
+    }
+  }
+  .notFoundContainer {
+    h2 {
+      text-align: center;
+      font-size: 24px;
+      color: #333;
+      font-weight: 400;
+      margin-bottom: 20px;
+      padding-top: 20px;
+    }
+  }
+}

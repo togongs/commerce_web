@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       keyword && keyword !== ''
         ? {
             name: {
-              contains: keyword,
+              contains: keyword ? keyword : '',
             },
           }
         : undefined
