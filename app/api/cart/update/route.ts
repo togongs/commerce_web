@@ -14,24 +14,20 @@ interface Session {
   }
 }
 
-export async function GET() {
-  const session: Session | null = await getServerSession(authOptions)
-  const cart =
-    await prisma.$queryRaw`select c.id, userId, quantity, amount, price, name, image_url from Cart as c join products as p where c.productId=p.id AND c.userId=${session?.id};`
-  if (!cart) return new Response(null, { status: 404 })
-  return NextResponse.json(cart)
-}
-
-export async function POST(request: Request): Promise<Response> {
+export async function POST(request: Request) {
   const session: Session | null = await getServerSession(authOptions)
   const body = await request.json()
-  // console.log('body', body)
   const { item } = body
+  console.log('item????', item)
+  if (session?.id !== item.userId) return null
   try {
-    const response = await prisma.cart.create({
+    const response = await prisma.cart.update({
+      where: {
+        id: item.id,
+      },
       data: {
-        userId: session?.id as string,
-        ...item,
+        quantity: item.quantity,
+        amount: item.amount,
       },
     })
     return NextResponse.json(response)

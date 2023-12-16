@@ -5,6 +5,7 @@ import CountControl from '@/components/CountControl'
 import { IconRefresh, IconX } from '@tabler/icons-react'
 import Image from 'next/image'
 import styles from './page.module.scss'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 interface CartItemProps {
   amount: number
@@ -18,7 +19,35 @@ interface CartItemProps {
 
 export default function CartItem(item: CartItemProps) {
   const [quantity, setQuantity] = React.useState<number>(item.quantity)
-  console.log('item', item)
+
+  const queryClient = useQueryClient()
+  const mutation = useMutation<unknown, unknown, CartItemProps, any>(
+    (item) =>
+      fetch(`/api/cart/update`, {
+        method: 'POST',
+        body: JSON.stringify({ item }),
+      }).then((res) => res.json()),
+    {
+      onMutate: async (item) => {
+        await queryClient.cancelQueries([`/api/cart/update`])
+        // Snapshot the previous value
+        const previous = queryClient.getQueryData([`/api/cart/update`])
+        // Optimistically update to the new value
+        queryClient.setQueryData<CartItemProps[]>(
+          [`/api/cart/update`],
+          (old) => old?.filter((c) => c.id !== item.id).concat(item),
+        )
+        // Return a context object with the snapshotted value
+        return { previous }
+      },
+      onError: (error, _, context) => {
+        queryClient.setQueryData([`/api/cart/update`], context.previous)
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries([`/api/cart/update`])
+      },
+    },
+  )
   return (
     <div className={styles.productContainer}>
       <Image
@@ -38,7 +67,12 @@ export default function CartItem(item: CartItemProps) {
           <CountControl value={quantity} setValue={setQuantity} />
           <IconRefresh
             onClick={() => {
-              alert('장바구니 수정')
+              mutation.mutate({
+                ...item,
+                quantity: quantity,
+                amount: item.price * quantity,
+              })
+              // alert('장바구니 수정')
             }}
           />
         </div>

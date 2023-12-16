@@ -45,7 +45,7 @@ export default function Page() {
       0
     )
   }, [data])
-  console.log('data', data)
+  // console.log('data', data)
   return (
     <div className={styles.container}>
       <p className={styles.title}>Cart ({data?.length ?? 0})</p>
