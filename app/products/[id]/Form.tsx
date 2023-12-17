@@ -25,7 +25,7 @@ export default function Form({ product }: FormProps) {
   const { data: session } = useSession()
   const router = useRouter()
   const [index, setIndex] = React.useState<number>(0)
-  const [quantity, setQuantity] = React.useState<number>(1)
+  const [quantity, setQuantity] = React.useState<number | string>(1)
   const editorState = React.useMemo(
     () =>
       product?.contents
@@ -130,8 +130,8 @@ export default function Form({ product }: FormProps) {
                 }
                 addCartMutation.mutate({
                   productId: product.id,
-                  quantity: quantity,
-                  amount: product.price * quantity,
+                  quantity: Number(quantity),
+                  amount: product.price * Number(quantity),
                 })
               }}
             >
