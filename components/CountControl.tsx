@@ -6,12 +6,12 @@ import {
   NumberInputHandlers,
 } from '@mantine/core'
 
-interface CountProps {
-  value: number
-  setValue: any
+interface CountControlProps {
+  value: number | string
+  setValue: React.Dispatch<React.SetStateAction<number | string>>
 }
 
-export default function CountControl({ value, setValue }: CountProps) {
+export default function CountControl({ value, setValue }: CountControlProps) {
   const handlers = useRef<NumberInputHandlers>()
 
   return (

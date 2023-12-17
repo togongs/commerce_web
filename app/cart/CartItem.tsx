@@ -14,14 +14,14 @@ interface CartItemProps {
   image_url: string
   name: string
   price: number
-  quantity: number
+  quantity: number | string
   productId: number
   userId: string
 }
 
 export default function CartItem(item: CartItemProps) {
   const router = useRouter()
-  const [quantity, setQuantity] = React.useState<number>(item.quantity)
+  const [quantity, setQuantity] = React.useState<number | string>(item.quantity)
   const queryClient = useQueryClient()
   const updateMutation = useMutation<unknown, unknown, CartItemProps, any>(
     (item) =>
@@ -104,7 +104,7 @@ export default function CartItem(item: CartItemProps) {
               updateMutation.mutate({
                 ...item,
                 quantity: quantity,
-                amount: item.price * quantity,
+                amount: item.price * Number(quantity),
               })
             }}
           />
@@ -112,7 +112,7 @@ export default function CartItem(item: CartItemProps) {
       </div>
       <div className={styles.priceContainer}>
         <span className={styles.sumPrice}>
-          {(item.price * quantity).toLocaleString()} 원
+          {(item.price * Number(quantity)).toLocaleString()} 원
         </span>
         <IconX
           className={styles.icon}

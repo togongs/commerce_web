@@ -10,10 +10,11 @@
     display: flex;
     .leftContainer {
       width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       .empty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
         font-size: 18px;
         color: #999;
       }
