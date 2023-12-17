@@ -40,12 +40,18 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            .icon {
+              cursor: pointer;
+            }
           }
         }
         .priceContainer {
           display: flex;
           .sumPrice {
             min-width: 85px;
+          }
+          .icon {
+            cursor: pointer;
           }
         }
       }

@@ -1,8 +1,6 @@
 'use client'
 
 import React from 'react'
-import CountControl from '@/components/CountControl'
-import { IconRefresh, IconX } from '@tabler/icons-react'
 import Image from 'next/image'
 import styles from './page.module.scss'
 import { Button } from '@mantine/core'
@@ -39,13 +37,12 @@ export default function Page() {
   )
   const dilveryAmount = data && data.length > 0 ? 5000 : 0
   const discountAmount = 0
-  const price = React.useMemo(() => {
-    return (
+  const price = React.useMemo(
+    () =>
       data?.map((item) => item.amount).reduce((prev, curr) => prev + curr, 0) ??
-      0
-    )
-  }, [data])
-  // console.log('data', data)
+      0,
+    [data],
+  )
   return (
     <div className={styles.container}>
       <p className={styles.title}>Cart ({data?.length ?? 0})</p>

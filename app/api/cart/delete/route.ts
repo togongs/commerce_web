@@ -17,16 +17,12 @@ interface Session {
 export async function POST(request: Request): Promise<Response> {
   const session: Session | null = await getServerSession(authOptions)
   const body = await request.json()
-  const { item } = body
+  const { id } = body
   // if (session?.id !== item.userId) return null
   try {
-    const response = await prisma.cart.update({
+    const response = await prisma.cart.delete({
       where: {
-        id: item.id,
-      },
-      data: {
-        quantity: item.quantity,
-        amount: item.amount,
+        id: id,
       },
     })
     // console.log('response', response)

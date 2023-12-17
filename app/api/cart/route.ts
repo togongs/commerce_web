@@ -17,7 +17,7 @@ interface Session {
 export async function GET() {
   const session: Session | null = await getServerSession(authOptions)
   const cart =
-    await prisma.$queryRaw`select c.id, userId, quantity, amount, price, name, image_url from Cart as c join products as p where c.productId=p.id AND c.userId=${session?.id};`
+    await prisma.$queryRaw`select c.id, userId, quantity, amount, price, name, image_url, productId from Cart as c join products as p where c.productId=p.id AND c.userId=${session?.id};`
   if (!cart) return new Response(null, { status: 404 })
   return NextResponse.json(cart)
 }

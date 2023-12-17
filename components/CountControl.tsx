@@ -30,7 +30,7 @@ export default function CountControl({ value, setValue }: CountProps) {
         onChange={setValue}
         handlersRef={handlers}
         max={200}
-        min={0}
+        min={1}
         step={1}
         readOnly
         styles={{ input: { width: 54, textAlign: 'center' } }}

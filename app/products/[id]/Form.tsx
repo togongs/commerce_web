@@ -26,8 +26,7 @@ export default function Form({ product }: FormProps) {
   const { data: session } = useSession()
   const router = useRouter()
   const [index, setIndex] = React.useState<number>(0)
-  const [quantity, setQuantity] = React.useState<number>(0)
-  console.log('quantity', quantity)
+  const [quantity, setQuantity] = React.useState<number>(1)
   const editorState = React.useMemo(
     () =>
       product?.contents
@@ -70,16 +69,25 @@ export default function Form({ product }: FormProps) {
   )
   const isWished = wishlist ? wishlist.includes(String(product.id)) : false
 
-  const postCartMutation = useMutation<
+  const addCartMutation = useMutation<
     unknown,
     unknown,
     Omit<CarttDto.Response, 'id' | 'userId'>, // id, userId는 db에서 생성
     any
-  >((item) =>
-    fetch(`/api/cart`, {
-      method: 'POST',
-      body: JSON.stringify({ item }),
-    }).then((res) => res.json()),
+  >(
+    (item) =>
+      fetch(`/api/cart`, {
+        method: 'POST',
+        body: JSON.stringify({ item }),
+      }).then((res) => res.json()),
+    {
+      onMutate: () => {
+        queryClient.invalidateQueries([`/api/cart`])
+      },
+      onSuccess: () => {
+        router.push('/cart')
+      },
+    },
   )
   //   console.log('wishlist', wishlist)
   return (
@@ -105,7 +113,7 @@ export default function Form({ product }: FormProps) {
         <div className={styles.infoContainer}>
           <span>{CATEGORY_MAP[product.category_id - 1]}</span>
           <div className={styles.name}>{product.name}</div>
-          <p className={styles.price}>{product.price.toLocaleString()}원</p>
+          <p className={styles.price}>{product.price?.toLocaleString()}원</p>
           <CountControl value={quantity} setValue={setQuantity} />
           <div className={styles.btnContainer}>
             <Button
@@ -121,12 +129,11 @@ export default function Form({ product }: FormProps) {
                   alert('로그인이 필요합니다.')
                   return router.push('/auth/login')
                 }
-                postCartMutation.mutate({
+                addCartMutation.mutate({
                   productId: product.id,
                   quantity: quantity,
                   amount: product.price * quantity,
                 })
-                return router.push('/cart')
               }}
             >
               장바구니
