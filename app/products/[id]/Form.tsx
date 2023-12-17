@@ -16,7 +16,6 @@ import styles from './Form.module.scss'
 import { IconHeart, IconHeartbeat, IconShoppingCart } from '@tabler/icons-react'
 import CountControl from '@/components/CountControl'
 import { CarttDto } from '@/app/types/cart/cart.dto'
-import { Cart } from '@prisma/client'
 
 interface FormProps {
   product: ProductDto.Response
@@ -89,7 +88,7 @@ export default function Form({ product }: FormProps) {
       },
     },
   )
-  //   console.log('wishlist', wishlist)
+
   return (
     <div className={styles.container}>
       <div className={styles.imageContainer}>

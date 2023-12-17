@@ -10,50 +10,12 @@
     display: flex;
     .leftContainer {
       width: 100%;
-      .productContainer {
-        display: flex;
-        border-bottom: 1px solid #e6e6e6;
-        padding: 16px;
-        width: 100%;
-        .image {
-          width: 230px;
-          height: 230px;
-          object-fit: cover;
-        }
-        img {
-          width: 100%;
-          height: auto;
-        }
-        .mid {
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          margin-left: 16px;
-          .name {
-            font-weight: bold;
-            margin-bottom: 8px;
-          }
-          .price {
-            margin-bottom: auto;
-          }
-          .countContainer {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            .icon {
-              cursor: pointer;
-            }
-          }
-        }
-        .priceContainer {
-          display: flex;
-          .sumPrice {
-            min-width: 85px;
-          }
-          .icon {
-            cursor: pointer;
-          }
-        }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .empty {
+        font-size: 18px;
+        color: #999;
       }
     }
     .rightContainer {
@@ -88,8 +50,9 @@
   }
   .recommend {
     margin-top: 100px;
-    .title {
+    .recommendTitle {
       font-weight: 600;
+      font-size: 20px;
       margin-bottom: 12px;
     }
   }
@@ -100,9 +63,11 @@
     gap: 10px;
     .image {
       border-radius: 12px;
+      object-fit: cover;
       cursor: pointer;
       width: 200px;
       height: 200px;
+      margin-bottom: 10px;
       img {
         width: 100%;
         height: auto;

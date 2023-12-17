@@ -4,7 +4,7 @@ import React from 'react'
 import CountControl from '@/components/CountControl'
 import { IconRefresh, IconX } from '@tabler/icons-react'
 import Image from 'next/image'
-import styles from './page.module.scss'
+import styles from './CartItem.module.scss'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 
@@ -23,7 +23,6 @@ export default function CartItem(item: CartItemProps) {
   const router = useRouter()
   const [quantity, setQuantity] = React.useState<number>(item.quantity)
   const queryClient = useQueryClient()
-
   const updateMutation = useMutation<unknown, unknown, CartItemProps, any>(
     (item) =>
       fetch(`/api/cart/update`, {
@@ -63,16 +62,13 @@ export default function CartItem(item: CartItemProps) {
     {
       onMutate: async (id) => {
         await queryClient.cancelQueries([`/api/cart`])
-
         // Snapshot the previous value
         const previous = queryClient.getQueryData([`/api/cart`])
-
         // Optimistically update to the new value
         queryClient.setQueryData<CartItemProps[]>(
           [`/api/cart`],
           (old) => old?.filter((c) => c.id !== id),
         )
-
         // Return a context object with the snapshotted value
         return { previous }
       },
@@ -84,6 +80,7 @@ export default function CartItem(item: CartItemProps) {
       },
     },
   )
+
   return (
     <div className={styles.productContainer}>
       <Image

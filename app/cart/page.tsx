@@ -43,12 +43,21 @@ export default function Page() {
       0,
     [data],
   )
+  const totalPrice = React.useMemo(
+    () => price - dilveryAmount - discountAmount,
+    [dilveryAmount, price],
+  )
+
   return (
     <div className={styles.container}>
-      <p className={styles.title}>Cart ({data?.length ?? 0})</p>
+      <p className={styles.title}>장바구니 ({data?.length ?? 0})</p>
       <div className={styles.table}>
         <div className={styles.leftContainer}>
-          {data?.map((item) => <CartItem {...item} key={item.id} />)}
+          {data && data.length > 0 ? (
+            data.map((item) => <CartItem {...item} key={item.id} />)
+          ) : (
+            <div className={styles.empty}>장바구니에 담긴 상품이 없습니다.</div>
+          )}
         </div>
         <div className={styles.rightContainer}>
           <div className={styles.pd}>
@@ -68,7 +77,7 @@ export default function Page() {
             <div className={styles.row}>
               <span className={styles.desc}>결제 금액</span>
               <span className={styles.price}>
-                {(price - dilveryAmount - discountAmount).toLocaleString()} 원
+                {totalPrice.toLocaleString()} 원
               </span>
             </div>
             <Button
@@ -88,7 +97,7 @@ export default function Page() {
         </div>
       </div>
       <div className={styles.recommend}>
-        <p className={styles.title}>추천상품</p>
+        <p className={styles.recommendTitle}>추천상품</p>
         {products && products.length > 0 ? (
           <div className={styles.imageContainer}>
             {products?.map((item) => (
