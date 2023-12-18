@@ -33,7 +33,7 @@ export default function Page() {
           {data && data.length > 0 ? (
             data.map((item) => <OrderDetail {...item} key={item.id} />)
           ) : (
-            <div className={styles.empty}>주문내역이 없습니다.</div>
+            <div className={styles.empty}>주문내역이 없습니다 .</div>
           )}
         </div>
       </div>
