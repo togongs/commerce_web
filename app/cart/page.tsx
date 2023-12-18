@@ -8,10 +8,10 @@ import { useQuery } from '@tanstack/react-query'
 import { ProductDto } from '../types/products/products.dto'
 import { useRouter } from 'next/navigation'
 import { CATEGORY_MAP } from '@/constants/products'
-import { CarttDto } from '../types/cart/cart.dto'
+import { CartDto } from '../types/cart/cart.dto'
 import CartItem from './CartItem'
 
-interface CartItem extends CarttDto.Response {
+interface CartItem extends CartDto.Response {
   name: string
   price: number
   image_url: string
@@ -101,11 +101,9 @@ export default function Page() {
         {products && products.length > 0 ? (
           <div className={styles.imageContainer}>
             {products?.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => router.push(`/products/${item.id}`)}
-              >
+              <div key={item.id}>
                 <Image
+                  onClick={() => router.push(`/products/${item.id}`)}
                   className={styles.image}
                   src={item.image_url ?? ''}
                   width={200}

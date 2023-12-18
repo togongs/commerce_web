@@ -1,4 +1,4 @@
-export namespace CarttDto {
+export namespace CartDto {
   export interface Response {
     id: number
     userId: string

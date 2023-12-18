@@ -6,11 +6,11 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]'
 const prisma = new PrismaClient()
 
 interface Session {
-  id?: string
+  id: string
   user: {
-    name?: string
-    email?: string
-    image?: string
+    name: string
+    email: string
+    image: string
   }
 }
 

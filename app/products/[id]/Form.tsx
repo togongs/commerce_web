@@ -15,7 +15,8 @@ import { useSession } from 'next-auth/react'
 import styles from './Form.module.scss'
 import { IconHeart, IconHeartbeat, IconShoppingCart } from '@tabler/icons-react'
 import CountControl from '@/components/CountControl'
-import { CarttDto } from '@/app/types/cart/cart.dto'
+import { CartDto } from '@/app/types/cart/cart.dto'
+import { OrdersDto } from '@/app/types/orders/orders.dto'
 
 interface FormProps {
   product: ProductDto.Response
@@ -71,7 +72,7 @@ export default function Form({ product }: FormProps) {
   const addCartMutation = useMutation<
     unknown,
     unknown,
-    Omit<CarttDto.Response, 'id' | 'userId'>, // id, userId는 db에서 생성
+    Omit<CartDto.Response, 'id' | 'userId'>, // id, userId는 db에서 생성
     any
   >(
     (item) =>
@@ -85,6 +86,27 @@ export default function Form({ product }: FormProps) {
       },
       onSuccess: () => {
         router.push('/cart')
+      },
+    },
+  )
+
+  const addOrderMutation = useMutation<
+    unknown,
+    unknown,
+    Omit<OrdersDto.OrderItemResponse, 'id'>[],
+    any
+  >(
+    (items) =>
+      fetch(`/api/order`, {
+        method: 'POST',
+        body: JSON.stringify({ items }),
+      }).then((res) => res.json()),
+    {
+      onMutate: () => {
+        queryClient.invalidateQueries([`/api/order`])
+      },
+      onSuccess: () => {
+        router.push('/mypage')
       },
     },
   )
@@ -123,7 +145,7 @@ export default function Form({ product }: FormProps) {
               }}
               radius="xl"
               size="md"
-              onClick={(type) => {
+              onClick={() => {
                 if (session === null) {
                   alert('로그인이 필요합니다.')
                   return router.push('/auth/login')
@@ -164,6 +186,30 @@ export default function Form({ product }: FormProps) {
               찜하기
             </Button>
           </div>
+          <Button
+            className={styles.btn}
+            styles={{
+              root: { paddingRight: 14, height: 48 },
+            }}
+            radius="xl"
+            size="md"
+            onClick={() => {
+              if (session === null) {
+                alert('로그인이 필요합니다.')
+                return router.push('/auth/login')
+              }
+              addOrderMutation.mutate([
+                {
+                  productId: product.id,
+                  quantity: Number(quantity),
+                  price: product.price,
+                  amount: product.price * Number(quantity),
+                },
+              ])
+            }}
+          >
+            구매하기
+          </Button>
           <p className={styles.date}>
             등록: {dayjs(product.createdAt).format('YYYY. MM. DD')}
           </p>

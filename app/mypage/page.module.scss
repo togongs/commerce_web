@@ -1,0 +1,33 @@
+.container {
+  width: 1200px;
+  margin: 0 auto;
+  .title {
+    margin-top: 30px;
+    margin-bottom: 12px;
+    font-size: 28px;
+  }
+  .table {
+    display: flex;
+    .leftContainer {
+      width: 100%;
+      .empty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        font-size: 18px;
+        color: #999;
+      }
+    }
+  }
+  .notFoundContainer {
+    h2 {
+      text-align: center;
+      font-size: 24px;
+      color: #333;
+      font-weight: 400;
+      margin-bottom: 20px;
+      padding-top: 20px;
+    }
+  }
+}
