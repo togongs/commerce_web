@@ -1,6 +1,37 @@
 .orderContainer {
-  display: flex;
-  border-bottom: 1px solid #e6e6e6;
-  padding: 16px;
-  width: 100%;
+  border: 1px solid #e6e6e6;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  padding: 12px;
+  .badgeContainer {
+    display: flex;
+    .iconX {
+      margin-left: auto;
+    }
+  }
+  .infoContainer {
+    display: flex;
+    .infoLeft {
+      display: flex;
+      flex-direction: column;
+    }
+    .infoRight {
+      display: flex;
+      flex-direction: column;
+      margin-left: auto;
+      .total {
+        margin-left: auto;
+        .price {
+          color: red;
+          font-weight: 600;
+        }
+      }
+      .day {
+        margin: auto;
+      }
+      .btn {
+        background-color: black;
+      }
+    }
+  }
 }

@@ -4,12 +4,13 @@ import React from 'react'
 import Image from 'next/image'
 import styles from './page.module.scss'
 import { Button } from '@mantine/core'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ProductDto } from '../types/products/products.dto'
 import { useRouter } from 'next/navigation'
 import { CATEGORY_MAP } from '@/constants/products'
 import { CartDto } from '../types/cart/cart.dto'
 import CartItem from './CartItem'
+import { OrdersDto } from '../types/orders/orders.dto'
 
 interface CartItem extends CartDto.Response {
   name: string
@@ -19,6 +20,7 @@ interface CartItem extends CartDto.Response {
 
 export default function Page() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { data } = useQuery<{ items: CartItem[] }, any, CartItem[]>(
     [`/api/cart`],
     () => fetch(`/api/cart`).then((res) => res.json()),
@@ -35,6 +37,26 @@ export default function Page() {
         }),
       }).then((res) => res.json()),
   )
+  const addOrderMutation = useMutation<
+    unknown,
+    unknown,
+    Omit<OrdersDto.OrderItemResponse, 'id'>[],
+    any
+  >(
+    (items) =>
+      fetch(`/api/order`, {
+        method: 'POST',
+        body: JSON.stringify({ items }),
+      }).then((res) => res.json()),
+    {
+      onMutate: () => {
+        queryClient.invalidateQueries([`/api/order`])
+      },
+      onSuccess: () => {
+        router.push('/mypage')
+      },
+    },
+  )
   const dilveryAmount = data && data.length > 0 ? 5000 : 0
   const discountAmount = 0
   const price = React.useMemo(
@@ -47,7 +69,7 @@ export default function Page() {
     () => price - dilveryAmount - discountAmount,
     [dilveryAmount, price],
   )
-
+  console.log('????', data)
   return (
     <div className={styles.container}>
       <p className={styles.title}>장바구니 ({data?.length ?? 0})</p>
@@ -88,7 +110,15 @@ export default function Page() {
               radius="xl"
               size="md"
               onClick={() => {
-                alert('구매하기')
+                if (!data) return
+                addOrderMutation.mutate(
+                  data.map((cart) => ({
+                    productId: cart.productId,
+                    price: cart.price,
+                    amount: cart.amount,
+                    quantity: cart.quantity,
+                  })),
+                )
               }}
             >
               구매하기

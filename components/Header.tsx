@@ -35,7 +35,7 @@ export default function Header() {
               width={30}
               height={30}
               alt="profile"
-              onClick={() => router.push('/my')}
+              onClick={() => router.push('/mypage')}
             />
           ) : (
             <IconUser

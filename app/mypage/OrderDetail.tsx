@@ -1,9 +1,13 @@
 'use client'
 
 import React from 'react'
-import styles from './page.module.scss'
 import OrderItem from './OrderItem'
 import { OrdersDto } from '../types/orders/orders.dto'
+import { Badge } from '@mantine/core'
+import { IconX } from '@tabler/icons-react'
+import dayjs from 'dayjs'
+import styles from './OrderDetail.module.scss'
+import { Button } from '@mantine/core'
 
 const ORDER_STATUS_MAP = [
   '주문취소',
@@ -32,13 +36,41 @@ interface OrderDetailProps extends OrdersDto.OrdersResponse {
   userId: string
 }
 export default function OrderDetail(item: OrderDetailProps) {
+  console.log('item', item)
   return (
     <div className={styles.orderContainer}>
-      <div>
-        <span>{ORDER_STATUS_MAP[item.status + 1]}</span>
-        {item.orderItems.map((orderItem, idx) => (
-          <OrderItem key={idx} {...orderItem} />
-        ))}
+      <div className={styles.badgeContainer}>
+        <Badge color={item.status === 0 ? 'red' : ''}>
+          {ORDER_STATUS_MAP[item.status + 1]}
+        </Badge>
+        <IconX className={styles.iconX} />
+      </div>
+      {item.orderItems.map((orderItem, idx) => (
+        <OrderItem key={idx} {...orderItem} />
+      ))}
+      <div className={styles.infoContainer}>
+        <div className={styles.infoLeft}>
+          <span>주문 정보</span>
+          <span>받는사람: {item.receiver ?? ''}</span>
+          <span>주소: {item.addresss ?? ''}</span>
+          <span>연락처: {item.phoneNumber ?? ''}</span>
+        </div>
+        <div className={styles.infoRight}>
+          <span className={styles.total}>
+            합계금액:{' '}
+            <span className={styles.price}>
+              {item.orderItems
+                .map((item) => item.amount)
+                .reduce((acc, cur) => acc + cur, 0)
+                .toLocaleString()}{' '}
+              원
+            </span>
+          </span>
+          <span className={styles.day}>
+            주문일자: {dayjs(item.createdAt).format('YYYY. MM. DD')}
+          </span>
+          <Button className={styles.btn}>결제처리</Button>
+        </div>
       </div>
     </div>
   )
