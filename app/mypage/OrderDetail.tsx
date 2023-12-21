@@ -8,6 +8,8 @@ import { IconX } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import styles from './OrderDetail.module.scss'
 import { Button } from '@mantine/core'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { CartDto } from '../types/cart/cart.dto'
 
 const ORDER_STATUS_MAP = [
   '주문취소',
@@ -36,14 +38,53 @@ interface OrderDetailProps extends OrdersDto.OrdersResponse {
   userId: string
 }
 export default function OrderDetail(item: OrderDetailProps) {
-  console.log('item', item)
+  //   console.log('item', item)
+  const queryClient = useQueryClient()
+  const updateMutation = useMutation<unknown, unknown, number, any>(
+    (status) =>
+      fetch(`/api/order/update`, {
+        method: 'POST',
+        body: JSON.stringify({ id: item.id, status, userId: item.userId }),
+      }).then((res) => res.json()),
+    {
+      onMutate: async (status) => {
+        await queryClient.cancelQueries([`/api/order`])
+        // Snapshot the previous value
+        const previous = queryClient.getQueryData([`/api/order`])
+        // Optimistically update to the new value
+        queryClient.setQueryData<CartDto.Response[]>(
+          [`/api/order`],
+          (old) =>
+            old?.map((c) => {
+              if (c.id === item.id) {
+                return { ...c, status: status }
+              }
+              return c
+            }),
+        )
+        // Return a context object with the snapshotted value
+        return { previous }
+      },
+      onError: (error, _, context) => {
+        queryClient.setQueryData([`/api/order`], context.previous)
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries([`/api/order`])
+      },
+    },
+  )
   return (
     <div className={styles.orderContainer}>
       <div className={styles.badgeContainer}>
-        <Badge color={item.status === 0 ? 'red' : ''}>
+        <Badge color={item.status < 1 ? 'red' : ''}>
           {ORDER_STATUS_MAP[item.status + 1]}
         </Badge>
-        <IconX className={styles.iconX} />
+        <IconX
+          onClick={() => {
+            updateMutation.mutate(-1)
+          }}
+          className={styles.iconX}
+        />
       </div>
       {item.orderItems.map((orderItem, idx) => (
         <OrderItem key={idx} {...orderItem} />
@@ -69,7 +110,14 @@ export default function OrderDetail(item: OrderDetailProps) {
           <span className={styles.day}>
             주문일자: {dayjs(item.createdAt).format('YYYY. MM. DD')}
           </span>
-          <Button className={styles.btn}>결제처리</Button>
+          <Button
+            className={styles.btn}
+            onClick={() => {
+              updateMutation.mutate(5)
+            }}
+          >
+            결제처리
+          </Button>
         </div>
       </div>
     </div>
