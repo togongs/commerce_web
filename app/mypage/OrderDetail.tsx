@@ -38,7 +38,6 @@ interface OrderDetailProps extends OrdersDto.OrdersResponse {
   userId: string
 }
 export default function OrderDetail(item: OrderDetailProps) {
-  //   console.log('item', item)
   const queryClient = useQueryClient()
   const updateMutation = useMutation<unknown, unknown, number, any>(
     (status) =>
@@ -87,7 +86,7 @@ export default function OrderDetail(item: OrderDetailProps) {
         />
       </div>
       {item.orderItems.map((orderItem, idx) => (
-        <OrderItem key={idx} {...orderItem} />
+        <OrderItem key={idx} {...orderItem} status={item?.status} />
       ))}
       <div className={styles.infoContainer}>
         <div className={styles.infoLeft}>

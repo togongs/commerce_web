@@ -36,8 +36,13 @@
   }
   .priceContainer {
     display: flex;
+    flex-direction: column;
     .sumPrice {
       min-width: 85px;
+    }
+    .btn {
+      background-color: black;
+      margin-top: auto;
     }
     .icon {
       cursor: pointer;
