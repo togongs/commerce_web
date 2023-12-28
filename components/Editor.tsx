@@ -3,7 +3,9 @@ import dynamic from 'next/dynamic'
 import { EditorProps } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { EditorState } from 'draft-js'
+import styles from './Editor.module.scss'
 import Button from './Button'
+import classNames from '@/constants/classNames'
 
 const Editor = dynamic<EditorProps>(
   () => import('react-draft-wysiwyg').then((module) => module.Editor),
@@ -13,16 +15,23 @@ const Editor = dynamic<EditorProps>(
 export default function CustomEditor({
   editorState,
   readOnly = false,
+  noPadding = false,
   onSave,
   onEditorStateChange,
 }: {
   editorState: EditorState
   readOnly?: boolean
+  noPadding?: boolean
   onSave?: () => void
   onEditorStateChange?: Dispatch<SetStateAction<EditorState | undefined>>
 }) {
   return (
-    <div style={{ padding: 16 }}>
+    <div
+      className={classNames(
+        readOnly ? styles.container : styles.readOnly,
+        noPadding ? styles.noPadding : '',
+      )}
+    >
       <Editor
         readOnly={readOnly}
         editorState={editorState}

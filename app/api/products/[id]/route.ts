@@ -14,6 +14,7 @@ export async function GET(
         id: Number(id),
       },
     })
+    console.log('response', response)
     if (!response) return new Response(null, { status: 404 })
     return NextResponse.json(response)
   } catch (error: any) {

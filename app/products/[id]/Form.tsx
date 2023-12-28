@@ -13,16 +13,23 @@ import { Button } from '@mantine/core'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import styles from './Form.module.scss'
-import { IconHeart, IconHeartbeat, IconShoppingCart } from '@tabler/icons-react'
+import {
+  IconHeart,
+  IconHeartbeat,
+  IconShoppingCart,
+  IconStar,
+} from '@tabler/icons-react'
 import CountControl from '@/components/CountControl'
 import { CartDto } from '@/app/types/cart/cart.dto'
 import { OrdersDto } from '@/app/types/orders/orders.dto'
+import { CommentsDto } from '@/app/types/comments/comments.dto'
 
 interface FormProps {
   product: ProductDto.Response
+  comments: CommentsDto.Response[]
 }
 
-export default function Form({ product }: FormProps) {
+export default function Form({ product, comments }: FormProps) {
   const { data: session } = useSession()
   const router = useRouter()
   const [index, setIndex] = React.useState<number>(0)
@@ -225,6 +232,32 @@ export default function Form({ product }: FormProps) {
       {editorState != null && (
         <CustomEditor editorState={editorState} readOnly />
       )}
+      <div className={styles.bottom}>
+        <p>후기</p>
+        {comments?.map((comment) => (
+          <div className={styles.commentContainer} key={comment.id}>
+            <div className={styles.fContainer}>
+              <div className={styles.rateContainer}>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <IconStar
+                    key={index}
+                    fill={index < comment.rate ? 'red' : 'none'}
+                    stroke={index < comment.rate ? 0 : 1}
+                  />
+                ))}
+              </div>
+              <p>{dayjs(comment.updatedAt).format('YYYY. MM. DD')}</p>
+            </div>
+            <CustomEditor
+              editorState={EditorState.createWithContent(
+                convertFromRaw(JSON.parse(comment.contents)),
+              )}
+              readOnly
+              noPadding
+            />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

@@ -32,7 +32,7 @@
         color: red;
       }
       .date {
-        color: #999;
+        color: #666;
       }
       .btnContainer {
         display: flex;
@@ -46,5 +46,30 @@
   .subImageContainer {
     display: flex;
     margin-top: 16px;
+  }
+  .bottom {
+    padding-bottom: 30px;
+    & > p {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .commentContainer {
+      max-width: 500px;
+      border: 1px solid #e2e4e7;
+      border-radius: 8px;
+      padding: 8px;
+      .fContainer {
+        display: flex;
+        & > p {
+          font-size: 14px;
+          color: #666;
+        }
+        .rateContainer {
+          display: flex;
+          flex: 1;
+          // margin-right: 80px;
+        }
+      }
+    }
   }
 }

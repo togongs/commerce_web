@@ -1,7 +1,7 @@
 .itemContainer {
   display: flex;
   //   border-bottom: 1px solid #e6e6e6;
-  padding: 16px;
+  padding: 16px 0;
   width: 100%;
   .image {
     width: 230px;
@@ -41,6 +41,8 @@
       min-width: 85px;
     }
     .btn {
+      width: 100px;
+      height: 36px;
       background-color: black;
       margin-top: auto;
     }

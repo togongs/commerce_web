@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import styles from './OrderDetail.module.scss'
 import { Button } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import { CartDto } from '../types/cart/cart.dto'
 
 const ORDER_STATUS_MAP = [
@@ -38,6 +39,7 @@ interface OrderDetailProps extends OrdersDto.OrdersResponse {
   userId: string
 }
 export default function OrderDetail(item: OrderDetailProps) {
+  const { data: session } = useSession()
   const queryClient = useQueryClient()
   const updateMutation = useMutation<unknown, unknown, number, any>(
     (status) =>
@@ -75,7 +77,7 @@ export default function OrderDetail(item: OrderDetailProps) {
   return (
     <div className={styles.orderContainer}>
       <div className={styles.badgeContainer}>
-        <Badge color={item.status < 1 ? 'red' : ''}>
+        <Badge className={styles.badge} color={item.status < 1 ? 'red' : ''}>
           {ORDER_STATUS_MAP[item.status + 1]}
         </Badge>
         <IconX
@@ -91,9 +93,9 @@ export default function OrderDetail(item: OrderDetailProps) {
       <div className={styles.infoContainer}>
         <div className={styles.infoLeft}>
           <span>주문 정보</span>
-          <span>받는사람: {item.receiver ?? ''}</span>
-          <span>주소: {item.addresss ?? ''}</span>
-          <span>연락처: {item.phoneNumber ?? ''}</span>
+          <span>받는 사람 : {item.receiver ?? session?.user?.name}</span>
+          {/* <span>주소 : {item.addresss ?? session?.user?.name}</span> */}
+          <span>연락처 : {item.phoneNumber ?? session?.user?.email}</span>
         </div>
         <div className={styles.infoRight}>
           <span className={styles.total}>

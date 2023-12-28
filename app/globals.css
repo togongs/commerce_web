@@ -3,3 +3,6 @@
 @tailwind utilities;
 
 /* @import '~react-image-gallery/styles/css/image-gallery.css'; */
+* {
+  font-size: 14px;
+}

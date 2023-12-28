@@ -77,7 +77,7 @@ export default function Page() {
       })
         .then((res) => res.json())
         .then(() => {
-          alert('success')
+          alert('저장되었습니다.')
         })
     }
   }
