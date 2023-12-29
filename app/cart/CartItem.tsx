@@ -112,7 +112,11 @@ export default function CartItem(item: CartItemProps) {
       </div>
       <div className={styles.priceContainer}>
         <span className={styles.sumPrice}>
-          {(item.price * Number(quantity)).toLocaleString()} 원
+          {/* {(item.price * Number(quantity)).toLocaleString()} 원 */}
+          {(
+            Math.ceil((item.price * Number(quantity)) / 100) * 100
+          ).toLocaleString()}{' '}
+          원
         </span>
         <IconX
           className={styles.icon}

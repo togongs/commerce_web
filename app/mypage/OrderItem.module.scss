@@ -1,7 +1,7 @@
 .itemContainer {
   display: flex;
-  //   border-bottom: 1px solid #e6e6e6;
-  padding: 16px 0;
+  border-bottom: 1px solid #e6e6e6;
+  padding: 16px;
   width: 100%;
   .image {
     width: 230px;
@@ -23,7 +23,7 @@
       margin-bottom: 8px;
     }
     .price {
-      margin-bottom: auto;
+      // margin-bottom: auto;
     }
     .countContainer {
       display: flex;
@@ -38,7 +38,7 @@
     display: flex;
     flex-direction: column;
     .sumPrice {
-      min-width: 85px;
+      margin-left: auto;
     }
     .btn {
       width: 100px;

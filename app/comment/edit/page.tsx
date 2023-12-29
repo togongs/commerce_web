@@ -57,28 +57,33 @@ export default function Page() {
   }, [orderItemId])
   return (
     <div className={styles.container}>
-      {/* {editorState != null && ( */}
-      <CustomEditor
-        editorState={editorState as any}
-        onEditorStateChange={setEditorState}
-        onSave={handleSave}
-      />
-      {/* )} */}
-      <Slider
-        defaultValue={5}
-        mih={1}
-        max={5}
-        step={1}
-        value={rate}
-        onChange={setRate}
-        marks={[
-          { value: 1 },
-          { value: 2 },
-          { value: 3 },
-          { value: 4 },
-          { value: 5 },
-        ]}
-      />
+      <p className={styles.title}>후기를 작성해주세요.</p>
+      <div style={{ width: 500 }}>
+        {/* {editorState != null && ( */}
+        <CustomEditor
+          editorState={editorState as any}
+          onEditorStateChange={setEditorState}
+          onSave={handleSave}
+        />
+        {/* )} */}
+        <Slider
+          className={styles.slider}
+          defaultValue={5}
+          mih={1}
+          max={5}
+          step={1}
+          value={rate}
+          onChange={setRate}
+          marks={[
+            { value: 0, label: '0점' },
+            { value: 1, label: '1점' },
+            { value: 2, label: '2점' },
+            { value: 3, label: '3점' },
+            { value: 4, label: '4점' },
+            { value: 5, label: '5점' },
+          ]}
+        />
+      </div>
     </div>
   )
 }

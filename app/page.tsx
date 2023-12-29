@@ -113,7 +113,7 @@ export default function Home() {
                 alt="image"
               />
               <p>{item.name}</p>
-              <p>{item.price.toLocaleString()}원</p>
+              <p>{(Math.ceil(item.price / 100) * 100).toLocaleString()}원</p>
               <span>{CATEGORY_MAP[item.category_id - 1]}</span>
             </div>
           ))}

@@ -26,7 +26,13 @@ const ORDER_STATUS_MAP = [
   '반품완료',
 ]
 
-interface OrderDetailProps extends OrdersDto.OrdersResponse {
+interface OrderDetailProps {
+  id: number
+  receiver: string
+  phoneNumber: string
+  createdAt: string
+  status: number
+  userId: string
   orderItems: {
     amount: number
     id: number
@@ -36,16 +42,23 @@ interface OrderDetailProps extends OrdersDto.OrdersResponse {
     productId: number
     quantity: number
   }[]
-  userId: string
 }
-export default function OrderDetail(item: OrderDetailProps) {
+export default function OrderDetail({
+  id,
+  orderItems,
+  receiver,
+  phoneNumber,
+  userId,
+  createdAt,
+  status,
+}: OrderDetailProps) {
   const { data: session } = useSession()
   const queryClient = useQueryClient()
   const updateMutation = useMutation<unknown, unknown, number, any>(
     (status) =>
       fetch(`/api/order/update`, {
         method: 'POST',
-        body: JSON.stringify({ id: item.id, status, userId: item.userId }),
+        body: JSON.stringify({ id, status, userId }),
       }).then((res) => res.json()),
     {
       onMutate: async (status) => {
@@ -57,7 +70,7 @@ export default function OrderDetail(item: OrderDetailProps) {
           [`/api/order`],
           (old) =>
             old?.map((c) => {
-              if (c.id === item.id) {
+              if (c.id === id) {
                 return { ...c, status: status }
               }
               return c
@@ -77,8 +90,8 @@ export default function OrderDetail(item: OrderDetailProps) {
   return (
     <div className={styles.orderContainer}>
       <div className={styles.badgeContainer}>
-        <Badge className={styles.badge} color={item.status < 1 ? 'red' : ''}>
-          {ORDER_STATUS_MAP[item.status + 1]}
+        <Badge className={styles.badge} color={status < 1 ? 'red' : ''}>
+          {ORDER_STATUS_MAP[status + 1]}
         </Badge>
         <IconX
           onClick={() => {
@@ -87,21 +100,20 @@ export default function OrderDetail(item: OrderDetailProps) {
           className={styles.iconX}
         />
       </div>
-      {item.orderItems.map((orderItem, idx) => (
-        <OrderItem key={idx} {...orderItem} status={item?.status} />
+      {orderItems.map((orderItem, idx) => (
+        <OrderItem key={idx} {...orderItem} status={status} />
       ))}
       <div className={styles.infoContainer}>
         <div className={styles.infoLeft}>
           <span>주문 정보</span>
-          <span>받는 사람 : {item.receiver ?? session?.user?.name}</span>
-          {/* <span>주소 : {item.addresss ?? session?.user?.name}</span> */}
-          <span>연락처 : {item.phoneNumber ?? session?.user?.email}</span>
+          <span>받는 사람 : {receiver ?? session?.user?.name}</span>
+          <span>연락처 : {phoneNumber ?? session?.user?.email}</span>
         </div>
         <div className={styles.infoRight}>
           <span className={styles.total}>
             합계금액:{' '}
             <span className={styles.price}>
-              {item.orderItems
+              {orderItems
                 .map((item) => item.amount)
                 .reduce((acc, cur) => acc + cur, 0)
                 .toLocaleString()}{' '}
@@ -109,7 +121,7 @@ export default function OrderDetail(item: OrderDetailProps) {
             </span>
           </span>
           <span className={styles.day}>
-            주문일자: {dayjs(item.createdAt).format('YYYY. MM. DD')}
+            주문일자: {dayjs(createdAt).format('YYYY. MM. DD')}
           </span>
           <Button
             className={styles.btn}

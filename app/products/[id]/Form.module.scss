@@ -40,6 +40,10 @@
       }
       .btn {
         background-color: black;
+        width: 50%;
+      }
+      .buyBtn {
+        background-color: black;
       }
     }
   }
@@ -55,7 +59,7 @@
     }
     .commentContainer {
       max-width: 500px;
-      border: 1px solid #e2e4e7;
+      border: 1px solid #e6e6e6;
       border-radius: 8px;
       padding: 8px;
       .fContainer {
@@ -70,6 +74,10 @@
           // margin-right: 80px;
         }
       }
+    }
+    .empty {
+      color: #666;
+      margin-top: 10px;
     }
   }
 }

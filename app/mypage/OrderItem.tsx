@@ -29,7 +29,7 @@ export default function OrderItem({
   status,
 }: OrderItemProps) {
   const router = useRouter()
-  const [qty, setQuantity] = React.useState<number | string>(quantity)
+  // const [qty, setQuantity] = React.useState<number | string>(quantity)
   // const queryClient = useQueryClient()
 
   return (
@@ -45,13 +45,14 @@ export default function OrderItem({
       <div className={styles.mid}>
         <span className={styles.name}>{name}</span>
         <span className={styles.price}>가격: {price.toLocaleString()}원</span>
-        <div className={styles.countContainer}>
+        <span className={styles.price}>수량: {quantity}</span>
+        {/* <div className={styles.countContainer}>
           <CountControl value={qty} setValue={setQuantity} />
-        </div>
+        </div> */}
       </div>
       <div className={styles.priceContainer}>
         <span className={styles.sumPrice}>
-          {(price * Number(qty)).toLocaleString()} 원
+          {(price * Number(quantity)).toLocaleString()} 원
         </span>
         {status === 5 && (
           <Button

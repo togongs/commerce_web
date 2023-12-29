@@ -66,10 +66,9 @@ export default function Page() {
     [data],
   )
   const totalPrice = React.useMemo(
-    () => price - dilveryAmount - discountAmount,
+    () => price + dilveryAmount - discountAmount,
     [dilveryAmount, price],
   )
-  console.log('????', data)
   return (
     <div className={styles.container}>
       <p className={styles.title}>장바구니 ({data?.length ?? 0})</p>
@@ -86,7 +85,7 @@ export default function Page() {
             <p>결제정보</p>
             <div className={styles.row}>
               <span>금액</span>
-              <span>{price.toLocaleString()} 원</span>
+              <span>{(Math.ceil(price / 100) * 100).toLocaleString()} 원</span>
             </div>
             <div className={styles.row}>
               <span>배송비</span>
@@ -99,7 +98,7 @@ export default function Page() {
             <div className={styles.row}>
               <span className={styles.desc}>결제 금액</span>
               <span className={styles.price}>
-                {totalPrice.toLocaleString()} 원
+                {(Math.ceil(totalPrice / 100) * 100).toLocaleString()} 원
               </span>
             </div>
             <Button
@@ -141,7 +140,7 @@ export default function Page() {
                   alt="image"
                 />
                 <p>{item.name}</p>
-                <p>{item.price.toLocaleString()}원</p>
+                <p>{(Math.ceil(item.price / 100) * 100).toLocaleString()}원</p>
                 <span>{CATEGORY_MAP[item.category_id - 1]}</span>
               </div>
             ))}
