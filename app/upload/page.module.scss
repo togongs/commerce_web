@@ -1,0 +1,9 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  .imageContainer {
+    width: 500px;
+    height: 500px;
+    position: relative;
+  }
+}

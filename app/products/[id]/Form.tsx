@@ -240,6 +240,7 @@ export default function Form({ product, comments }: FormProps) {
         {comments.length > 0 ? (
           comments.map((comment) => (
             <div className={styles.commentContainer} key={comment.id}>
+              {/* {console.log('comment', comment)} */}
               <div className={styles.fContainer}>
                 <div className={styles.rateContainer}>
                   {Array.from({ length: 5 }).map((_, index) => (
@@ -259,6 +260,18 @@ export default function Form({ product, comments }: FormProps) {
                 readOnly
                 noPadding
               />
+              <div style={{ display: 'flex' }}>
+                {comment?.images?.split(',').map((image, imageIndex) => (
+                  <div className={styles.imageContainer} key={imageIndex}>
+                    <Image
+                      src={image}
+                      alt="image"
+                      layout="fill"
+                      objectFit="contain"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           ))
         ) : (
