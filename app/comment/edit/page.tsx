@@ -7,6 +7,7 @@ import styles from './page.module.scss'
 import Image from 'next/image'
 import React from 'react'
 import { Slider } from '@mantine/core'
+import CustomImage from '@/components/CustomImage'
 
 export default function Page() {
   const router = useRouter()
@@ -128,14 +129,7 @@ export default function Page() {
           {images &&
             images.length > 0 &&
             images.map((image, imageIndex) => (
-              <div className={styles.imageContainer} key={imageIndex}>
-                <Image
-                  src={image}
-                  alt="image"
-                  layout="fill"
-                  objectFit="contain"
-                />
-              </div>
+              <CustomImage src={image} key={imageIndex} />
             ))}
         </div>
       </div>

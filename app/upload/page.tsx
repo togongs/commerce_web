@@ -4,6 +4,7 @@ import React from 'react'
 import styles from './page.module.scss'
 import Button from '@/components/Button'
 import Image from 'next/image'
+import CustomImage from '@/components/CustomImage'
 
 export default function Page() {
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -32,11 +33,7 @@ export default function Page() {
     <div className={styles.container}>
       <input ref={inputRef} type="file" accept="image/*" />
       <Button onClick={handleUpload}>업로드</Button>
-      {image !== '' && (
-        <div className={styles.imageContainer}>
-          <Image src={image} alt="image" layout="fill" objectFit="contain" />
-        </div>
-      )}
+      {image !== '' && <CustomImage src={image} />}
     </div>
   )
 }

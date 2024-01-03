@@ -23,6 +23,7 @@ import CountControl from '@/components/CountControl'
 import { CartDto } from '@/app/types/cart/cart.dto'
 import { OrdersDto } from '@/app/types/orders/orders.dto'
 import { CommentsDto } from '@/app/types/comments/comments.dto'
+import CustomImage from '@/components/CustomImage'
 
 interface FormProps {
   product: ProductDto.Response
@@ -261,16 +262,11 @@ export default function Form({ product, comments }: FormProps) {
                 noPadding
               />
               <div style={{ display: 'flex' }}>
-                {comment?.images?.split(',').map((image, imageIndex) => (
-                  <div className={styles.imageContainer} key={imageIndex}>
-                    <Image
-                      src={image}
-                      alt="image"
-                      layout="fill"
-                      objectFit="contain"
-                    />
-                  </div>
-                ))}
+                {comment?.images
+                  ?.split(',')
+                  .map((image, imageIndex) => (
+                    <CustomImage src={image} key={imageIndex} size={150} />
+                  ))}
               </div>
             </div>
           ))
