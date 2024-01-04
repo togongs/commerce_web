@@ -4,9 +4,13 @@ import React from 'react'
 import OrderItem from './OrderItem'
 import { Badge } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
+import dayjs from 'dayjs'
 import styles from './OrderDetail.module.scss'
+import { Button } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import { CartDto } from '../types/cart/cart.dto'
+import Script from 'next/script'
 
 const ORDER_STATUS_MAP = [
   '주문취소',
@@ -48,6 +52,7 @@ export default function OrderDetail({
   createdAt,
   status,
 }: OrderDetailProps) {
+  const { data: session } = useSession()
   const queryClient = useQueryClient()
   const updateMutation = useMutation<unknown, unknown, number, any>(
     (status) =>
@@ -82,29 +87,119 @@ export default function OrderDetail({
       },
     },
   )
+  const formRef = React.useRef<HTMLFormElement | null>(null)
+  React.useEffect(() => {
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = 'https://testspay.kcp.co.kr/plugin/kcp_spay_hub.js'
+    formRef.current?.appendChild(script)
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      formRef.current?.removeChild(script)
+    }
+  }, [])
+  const totalPrice = React.useMemo(
+    () =>
+      orderItems.map((item) => item.amount).reduce((acc, cur) => acc + cur, 0),
+    [orderItems],
+  )
+  const [totalP, setTotalPrice] = React.useState<string | number>()
+
   return (
-    <div className={styles.orderContainer}>
-      <div className={styles.badgeContainer}>
-        <Badge className={styles.badge} color={status < 1 ? 'red' : ''}>
-          {ORDER_STATUS_MAP[status + 1]}
-        </Badge>
-        <IconX
-          onClick={() => {
-            updateMutation.mutate(-1)
-          }}
-          className={styles.iconX}
-        />
-      </div>
-      {orderItems.map((orderItem, idx) => (
-        <OrderItem
-          key={idx}
-          {...orderItem}
-          status={status}
-          receiver={receiver}
-          phoneNumber={phoneNumber}
-          createdAt={createdAt}
-        />
-      ))}
-    </div>
+    <>
+      <Script id="completePayment">
+        {`
+          function m_Completepayment(FormOrJson, closeEvent) {
+            const form = document.order_info;
+            GetField( form, FormOrJson );
+            if (form.res_cd.value == "0000") {
+              form.submit();
+            } else {
+              alert("[" + form.res_cd.value + "] " + form.res_msg.value);
+              closeEvent();
+            }
+          }
+
+          function jsf__pay(form) {
+            try {
+              KCP_Pay_Execute_Web(form);
+            }
+            catch (e) {
+              alert(e);
+            }
+          }
+        `}
+      </Script>
+      <form
+        name="order_info"
+        ref={formRef}
+        onSubmit={(e) => {
+          e.preventDefault()
+          // @ts-ignore
+          jsf__pay(document.order_info)
+        }}
+      >
+        <div className={styles.orderContainer}>
+          <div className={styles.badgeContainer}>
+            <Badge className={styles.badge} color={status < 1 ? 'red' : ''}>
+              {ORDER_STATUS_MAP[status + 1]}
+            </Badge>
+            <IconX
+              onClick={() => {
+                updateMutation.mutate(-1)
+              }}
+              className={styles.iconX}
+            />
+          </div>
+          {orderItems.map((orderItem, idx) => (
+            <OrderItem key={idx} {...orderItem} status={status} />
+          ))}
+          <div className={styles.infoContainer}>
+            <div className={styles.infoLeft}>
+              <span>주문 정보</span>
+              <span>받는 사람 : {receiver ?? session?.user?.name}</span>
+              <span>연락처 : {phoneNumber ?? session?.user?.email}</span>
+            </div>
+            <div className={styles.infoRight}>
+              <span className={styles.total}>
+                합계금액:{' '}
+                <span className={styles.price}>
+                  {totalPrice.toLocaleString()} 원
+                </span>
+              </span>
+              <span className={styles.day}>
+                주문일자: {dayjs(createdAt).format('YYYY. MM. DD')}
+              </span>
+              <Button
+                type="submit"
+                className={styles.btn}
+                onClick={() => {
+                  setTotalPrice(totalPrice)
+                  // updateMutation.mutate(5)
+                }}
+              >
+                결제처리
+              </Button>
+            </div>
+          </div>
+          <input type="hidden" name="ordr_idxx" value="TEST12345" />
+          <input type="hidden" name="good_name" value="테스트" />
+          <input type="hidden" name="good_mny" value={totalP ?? ''} />
+          <input type="hidden" name="buyr_name" value="홍길동" />
+          <input type="hidden" name="buyr_tel2" value="010-0000-0000" />
+          <input type="hidden" name="buyr_mail" value="test@test.co.kr" />
+          <input type="hidden" name="pay_method" value="100000000000" />
+          <input type="hidden" name="site_cd" value="T0000" />
+          <input type="hidden" name="site_name" value="TEST SITE" />
+          <input type="hidden" name="res_cd" value="" />
+          <input type="hidden" name="res_msg" value="" />
+          <input type="hidden" name="enc_info" value="" />
+          <input type="hidden" name="enc_data" value="" />
+          <input type="hidden" name="ret_pay_method" value="" />
+          <input type="hidden" name="tran_cd" value="" />
+          <input type="hidden" name="use_pay_method" value="" />
+        </div>
+      </form>
+    </>
   )
 }
