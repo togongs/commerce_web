@@ -2,14 +2,10 @@
 
 import React from 'react'
 import OrderItem from './OrderItem'
-import { OrdersDto } from '../types/orders/orders.dto'
 import { Badge } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
-import dayjs from 'dayjs'
 import styles from './OrderDetail.module.scss'
-import { Button } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
 import { CartDto } from '../types/cart/cart.dto'
 
 const ORDER_STATUS_MAP = [
@@ -52,7 +48,6 @@ export default function OrderDetail({
   createdAt,
   status,
 }: OrderDetailProps) {
-  const { data: session } = useSession()
   const queryClient = useQueryClient()
   const updateMutation = useMutation<unknown, unknown, number, any>(
     (status) =>
@@ -101,38 +96,15 @@ export default function OrderDetail({
         />
       </div>
       {orderItems.map((orderItem, idx) => (
-        <OrderItem key={idx} {...orderItem} status={status} />
+        <OrderItem
+          key={idx}
+          {...orderItem}
+          status={status}
+          receiver={receiver}
+          phoneNumber={phoneNumber}
+          createdAt={createdAt}
+        />
       ))}
-      <div className={styles.infoContainer}>
-        <div className={styles.infoLeft}>
-          <span>주문 정보</span>
-          <span>받는 사람 : {receiver ?? session?.user?.name}</span>
-          <span>연락처 : {phoneNumber ?? session?.user?.email}</span>
-        </div>
-        <div className={styles.infoRight}>
-          <span className={styles.total}>
-            합계금액:{' '}
-            <span className={styles.price}>
-              {orderItems
-                .map((item) => item.amount)
-                .reduce((acc, cur) => acc + cur, 0)
-                .toLocaleString()}{' '}
-              원
-            </span>
-          </span>
-          <span className={styles.day}>
-            주문일자: {dayjs(createdAt).format('YYYY. MM. DD')}
-          </span>
-          <Button
-            className={styles.btn}
-            onClick={() => {
-              updateMutation.mutate(5)
-            }}
-          >
-            결제처리
-          </Button>
-        </div>
-      </div>
     </div>
   )
 }

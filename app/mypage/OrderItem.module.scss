@@ -51,3 +51,48 @@
     }
   }
 }
+.infoContainer {
+  display: flex;
+  padding: 16px;
+  .infoLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .infoRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+    justify-content: flex-end;
+    .total {
+      // margin-left: auto;
+      // margin-bottom: 8px;
+      .price {
+        color: red;
+        font-weight: 600;
+        font-size: 16px;
+      }
+    }
+    .day {
+      margin: 5px 0;
+    }
+    .btn {
+      width: 100px;
+      height: 36px;
+      background-color: black;
+      margin-left: 8px;
+    }
+  }
+}
+.buy {
+  display: flex;
+  .btn {
+    width: 100px;
+    height: 36px;
+    background-color: black;
+    margin-left: auto;
+    margin-right: 15px;
+    margin-bottom: 15px;
+  }
+}
