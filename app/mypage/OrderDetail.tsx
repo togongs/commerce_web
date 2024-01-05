@@ -103,7 +103,11 @@ export default function OrderDetail({
       orderItems.map((item) => item.amount).reduce((acc, cur) => acc + cur, 0),
     [orderItems],
   )
+  const itemNames = React.useMemo(() => {
+    return orderItems.map((item) => item.name)
+  }, [orderItems])
   const [totalP, setTotalPrice] = React.useState<string | number>()
+  const [orderItemName, setOrderItemName] = React.useState<string[]>()
 
   return (
     <>
@@ -121,7 +125,9 @@ export default function OrderDetail({
           }
 
           function jsf__pay(form) {
+            console.log('form????', form)
             try {
+              console.log('haha')
               KCP_Pay_Execute_Web(form);
             }
             catch (e) {
@@ -175,7 +181,8 @@ export default function OrderDetail({
                 className={styles.btn}
                 onClick={() => {
                   setTotalPrice(totalPrice)
-                  // updateMutation.mutate(5)
+                  setOrderItemName(itemNames)
+                  updateMutation.mutate(5)
                 }}
               >
                 결제처리
@@ -183,12 +190,20 @@ export default function OrderDetail({
             </div>
           </div>
           <input type="hidden" name="ordr_idxx" value="TEST12345" />
-          <input type="hidden" name="good_name" value="테스트" />
+          <input type="hidden" name="good_name" value={orderItemName} />
           <input type="hidden" name="good_mny" value={totalP ?? ''} />
-          <input type="hidden" name="buyr_name" value="홍길동" />
+          <input
+            type="hidden"
+            name="buyr_name"
+            value={receiver ?? session?.user?.name}
+          />
           <input type="hidden" name="buyr_tel2" value="010-0000-0000" />
-          <input type="hidden" name="buyr_mail" value="test@test.co.kr" />
-          <input type="hidden" name="pay_method" value="100000000000" />
+          <input
+            type="hidden"
+            name="buyr_mail"
+            value={phoneNumber ?? session?.user?.email}
+          />
+          <input type="hidden" name="pay_method" value="001000000000" />
           <input type="hidden" name="site_cd" value="T0000" />
           <input type="hidden" name="site_name" value="TEST SITE" />
           <input type="hidden" name="res_cd" value="" />
