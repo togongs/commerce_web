@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import styles from './page.module.scss'
+import styles from './not-found.module.scss'
 
 export default function NotFoundPage() {
   return (
