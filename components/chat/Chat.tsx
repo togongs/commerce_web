@@ -4,13 +4,14 @@ import React from 'react'
 import { User } from '@prisma/client'
 import { ChatDto } from '@/app/types/chat/chat.dto'
 import { useSession } from 'next-auth/react'
+import { Input } from '@mantine/core'
 
 interface ConverSationProps extends User {
   conversations?: ChatDto.ConversationResponse[]
 }
 
 interface ChatProps {
-  users: ConverSationProps
+  currentUser: ConverSationProps
   receiver: {
     receiverId: string
     receiverName: string
@@ -18,10 +19,10 @@ interface ChatProps {
   }
 }
 
-export default function Chat({ receiver, users }: ChatProps) {
+export default function Chat({ receiver, currentUser }: ChatProps) {
   const { data: session }: any = useSession()
   const [message, setMessage] = React.useState('')
-  const conversation = users?.conversations?.find((conversation) =>
+  const conversation = currentUser.conversations?.find((conversation) =>
     conversation.users.find((user) => user.id === conversation.receiverId),
   )
   return (
@@ -61,7 +62,7 @@ export default function Chat({ receiver, users }: ChatProps) {
             setMessage('')
           }}
         >
-          <input
+          <Input
             type="text"
             placeholder="메시지를 작성해주세요."
             value={message}

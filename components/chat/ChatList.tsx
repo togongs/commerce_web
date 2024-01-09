@@ -1,10 +1,11 @@
 import { ChatDto } from '@/app/types/chat/chat.dto'
-import { User } from '@prisma/client'
 import dayjs from 'dayjs'
-import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import styles from './ChatList.module.scss'
 import React from 'react'
 
 interface ChatListProps {
+  currentUserId: string
   user: {
     conversations?: ChatDto.ConversationResponse[]
     id: string
@@ -15,22 +16,27 @@ interface ChatListProps {
   }
 }
 
-export default function ChatList({ user }: ChatListProps) {
-  const { data: session }: any = useSession()
-  const messageWithCurrentUser = user?.conversations?.find((conversation) =>
-    conversation.users.find((user) => user.id === session?.id),
+export default function ChatList({ user, currentUserId }: ChatListProps) {
+  const messageWithCurrentUser = user.conversations?.find((conversation) =>
+    conversation.users.find((user) => user.id === currentUserId),
   )
   const latestMessage = messageWithCurrentUser?.messages.slice(-1)[0]
   return (
-    <div>
-      <div></div>
-      <div>
+    <div style={{ display: 'flex' }}>
+      <Image
+        className={styles.image}
+        src={user?.image!}
+        width={30}
+        height={30}
+        alt="profile"
+      />
+      <div style={{ flex: 1 }}>
         <h3>{user.name}</h3>
         {latestMessage && <p>{latestMessage.text}</p>}
       </div>
       <div>
         {latestMessage && (
-          <p>{dayjs(latestMessage.createdAt).format('YYYY.MM.DD')}</p>
+          <p>{dayjs(latestMessage.createdAt).format('YY.MM.DD HH:MM')}</p>
         )}
       </div>
     </div>
