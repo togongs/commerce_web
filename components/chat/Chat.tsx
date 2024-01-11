@@ -26,9 +26,8 @@ interface ChatProps {
 export default function Chat({ receiver, currentUser }: ChatProps) {
   const [message, setMessage] = React.useState('')
   const conversation = currentUser.conversations?.find((conversation) =>
-    conversation.users.find((user) => user.id === conversation.receiverId),
+    conversation.users.find((user) => user.id === receiver.receiverId),
   )
-  console.log('conversation', conversation)
   const lastMessageTime = conversation?.messages
     .filter((message) => message.receiverId === currentUser.id)
     .slice(-1)[0].createdAt
