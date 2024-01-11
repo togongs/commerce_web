@@ -25,29 +25,10 @@ interface ChatProps {
 
 export default function Chat({ receiver, currentUser }: ChatProps) {
   const [message, setMessage] = React.useState('')
-  const { trigger } = useSWRMutation(
-    '/api/chat',
-    (
-      url: string,
-      {
-        arg,
-      }: {
-        arg: {
-          text: string
-          receiverId: string
-          senderId: string
-        }
-      },
-    ) => {
-      return fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(arg),
-      }).then((res) => res.json())
-    },
-  )
   const conversation = currentUser.conversations?.find((conversation) =>
     conversation.users.find((user) => user.id === conversation.receiverId),
   )
+  console.log('conversation', conversation)
   const lastMessageTime = conversation?.messages
     .filter((message) => message.receiverId === currentUser.id)
     .slice(-1)[0].createdAt
@@ -61,18 +42,13 @@ export default function Chat({ receiver, currentUser }: ChatProps) {
         e.preventDefault()
         if (message) {
           try {
-            // await fetch('/api/chat', {
-            //   method: 'POST',
-            //   body: JSON.stringify({
-            //     text: message,
-            //     receiverId: receiver.receiverId,
-            //     senderId: currentUser.id,
-            //   }),
-            // })
-            trigger({
-              text: message,
-              receiverId: receiver.receiverId,
-              senderId: currentUser.id,
+            fetch('/api/chat', {
+              method: 'POST',
+              body: JSON.stringify({
+                text: message,
+                receiverId: receiver.receiverId,
+                senderId: currentUser.id,
+              }),
             })
           } catch (error) {
             console.error(error)

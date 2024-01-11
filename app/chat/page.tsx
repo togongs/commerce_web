@@ -17,16 +17,14 @@ export default function Page() {
     receiverName: '',
     receiverImage: '',
   })
-  const fetcher = (url: string) => fetch(url).then((res) => res.json())
-  //   const { data: users } = useQuery<any, any, User[]>([`chat`], () =>
-  //     fetch(`/api/chat`).then((res) => res.json()),
-  //   )
-  const { data: users } = useSWR<User[]>('/api/chat', fetcher, {
-    refreshInterval: 1000,
-  })
-  const currentUserWithMessage = users?.find(
-    (user) => user.email === session?.user?.email,
+  const { data: users } = useQuery<any, any, User[]>(
+    [`/api/chat`],
+    () => fetch(`/api/chat`).then((res) => res.json()),
+    {
+      refetchInterval: 1000,
+    },
   )
+  const currentUserWithMessage = users?.find((user) => user.id === session?.id)
   if (session === null) redirect('/auth/login')
   return (
     <div className={styles.container}>

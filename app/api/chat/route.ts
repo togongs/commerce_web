@@ -27,7 +27,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const body = await request.json()
-  console.log('body', body)
   const conversation = await prisma.conversation.findFirst({
     where: {
       AND: [
@@ -48,6 +47,7 @@ export async function POST(request: Request) {
       ],
     },
   })
+  console.log('conver???', conversation)
   if (conversation) {
     try {
       const message = await prisma.message.create({
