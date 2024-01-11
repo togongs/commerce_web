@@ -7,6 +7,7 @@ import {
   IconLogout,
   IconShoppingCart,
   IconUser,
+  IconMessageDots,
 } from '@tabler/icons-react'
 import Image from 'next/image'
 import { signOut, useSession } from 'next-auth/react'
@@ -21,6 +22,10 @@ export default function Header() {
       <div className={styles.container}>
         <IconHome className={styles.icon} onClick={() => router.push('/')} />
         <div className={styles.rightContainer}>
+          <IconMessageDots
+            className={styles.icon}
+            onClick={() => router.push('/chat')}
+          />
           <IconHeart
             className={styles.icon}
             onClick={() => router.push('/wishlist')}
@@ -29,7 +34,6 @@ export default function Header() {
             className={styles.icon}
             onClick={() => router.push('/cart')}
           />
-
           {session ? (
             <>
               <Image

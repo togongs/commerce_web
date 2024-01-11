@@ -6,8 +6,9 @@ import { useSession } from 'next-auth/react'
 import Chat from '@/components/chat/Chat'
 import { redirect } from 'next/navigation'
 import ChatList from '@/components/chat/ChatList'
-import { User } from '@prisma/client'
+import useSWR from 'swr'
 import styles from './page.module.scss'
+import { User } from '@prisma/client'
 
 export default function Page() {
   const { data: session }: any = useSession()
@@ -16,10 +17,13 @@ export default function Page() {
     receiverName: '',
     receiverImage: '',
   })
-
-  const { data: users } = useQuery<any, any, User[]>([`chat`], () =>
-    fetch(`/api/chat`).then((res) => res.json()),
-  )
+  const fetcher = (url: string) => fetch(url).then((res) => res.json())
+  //   const { data: users } = useQuery<any, any, User[]>([`chat`], () =>
+  //     fetch(`/api/chat`).then((res) => res.json()),
+  //   )
+  const { data: users } = useSWR<User[]>('/api/chat', fetcher, {
+    refreshInterval: 1000,
+  })
   const currentUserWithMessage = users?.find(
     (user) => user.email === session?.user?.email,
   )

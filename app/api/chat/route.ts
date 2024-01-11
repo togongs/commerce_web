@@ -53,7 +53,6 @@ export async function POST(request: Request) {
       const message = await prisma.message.create({
         data: {
           text: body.text,
-          //   image: body.image,
           senderId: body.senderId,
           receiverId: body.receiverId,
           conversationId: conversation.id,
@@ -80,13 +79,11 @@ export async function POST(request: Request) {
         },
       },
     })
-    console.log('newConversation', newConversation)
 
     try {
       const message = await prisma.message.create({
         data: {
           text: body.text,
-          //   image: body.image,
           senderId: body.senderId,
           receiverId: body.receiverId,
           conversationId: newConversation.id,

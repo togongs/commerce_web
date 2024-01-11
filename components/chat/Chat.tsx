@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react'
 import { Input } from '@mantine/core'
 import styles from './Chat.module.scss'
 import Image from 'next/image'
+import useSWRMutation from 'swr/mutation'
 import { formatTime, fromNow } from '@/constants/dayjs'
 
 interface ConverSationProps extends User {
@@ -23,12 +24,30 @@ interface ChatProps {
 }
 
 export default function Chat({ receiver, currentUser }: ChatProps) {
-  const { data: session }: any = useSession()
   const [message, setMessage] = React.useState('')
+  const { trigger } = useSWRMutation(
+    '/api/chat',
+    (
+      url: string,
+      {
+        arg,
+      }: {
+        arg: {
+          text: string
+          receiverId: string
+          senderId: string
+        }
+      },
+    ) => {
+      return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(arg),
+      }).then((res) => res.json())
+    },
+  )
   const conversation = currentUser.conversations?.find((conversation) =>
     conversation.users.find((user) => user.id === conversation.receiverId),
   )
-  console.log('receiver', receiver)
   const lastMessageTime = conversation?.messages
     .filter((message) => message.receiverId === currentUser.id)
     .slice(-1)[0].createdAt
@@ -42,13 +61,18 @@ export default function Chat({ receiver, currentUser }: ChatProps) {
         e.preventDefault()
         if (message) {
           try {
-            await fetch('/api/chat', {
-              method: 'POST',
-              body: JSON.stringify({
-                text: message,
-                receiverId: receiver.receiverId,
-                senderId: session?.id,
-              }),
+            // await fetch('/api/chat', {
+            //   method: 'POST',
+            //   body: JSON.stringify({
+            //     text: message,
+            //     receiverId: receiver.receiverId,
+            //     senderId: currentUser.id,
+            //   }),
+            // })
+            trigger({
+              text: message,
+              receiverId: receiver.receiverId,
+              senderId: currentUser.id,
             })
           } catch (error) {
             console.error(error)
