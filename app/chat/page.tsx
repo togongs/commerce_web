@@ -20,44 +20,41 @@ export default function Page() {
   const { data: users } = useQuery<any, any, User[]>([`chat`], () =>
     fetch(`/api/chat`).then((res) => res.json()),
   )
-  // 현재 유저
   const currentUserWithMessage = users?.find(
     (user) => user.email === session?.user?.email,
   )
   if (session === null) redirect('/auth/login')
   return (
     <div className={styles.container}>
-      <div style={{ display: 'flex', gap: 30 }}>
-        <section style={{ flex: 1 }}>
-          <h3>채팅목록</h3>
-          <hr />
-          <div>
-            {users &&
-              users.length > 0 &&
-              users
-                .filter((user) => user.id !== session?.id)
-                .map((user) => (
-                  <div
-                    key={user.id}
-                    onClick={() => {
-                      setReceiver({
-                        receiverId: user.id || '',
-                        receiverName: user.name || '',
-                        receiverImage: user.image || '',
-                      })
-                    }}
-                  >
-                    <ChatList user={user} currentUserId={session?.id} />
-                  </div>
-                ))}
-          </div>
-        </section>
-        <section style={{ width: '65%' }}>
-          {currentUserWithMessage && (
-            <Chat currentUser={currentUserWithMessage} receiver={receiver} />
-          )}
-        </section>
-      </div>
+      <section className={styles.leftSection}>
+        <h1>채팅목록</h1>
+        <div className={styles.chatListContainer}>
+          {users &&
+            users.length > 0 &&
+            users
+              .filter((user) => user.id !== session?.id)
+              .map((user) => (
+                <div
+                  className={styles.list}
+                  key={user.id}
+                  onClick={() => {
+                    setReceiver({
+                      receiverId: user.id || '',
+                      receiverName: user.name || '',
+                      receiverImage: user.image || '',
+                    })
+                  }}
+                >
+                  <ChatList user={user} currentUserId={session?.id} />
+                </div>
+              ))}
+        </div>
+      </section>
+      <section className={styles.rightSection}>
+        {currentUserWithMessage && (
+          <Chat currentUser={currentUserWithMessage} receiver={receiver} />
+        )}
+      </section>
     </div>
   )
 }

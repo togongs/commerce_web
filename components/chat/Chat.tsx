@@ -5,6 +5,9 @@ import { User } from '@prisma/client'
 import { ChatDto } from '@/app/types/chat/chat.dto'
 import { useSession } from 'next-auth/react'
 import { Input } from '@mantine/core'
+import styles from './Chat.module.scss'
+import Image from 'next/image'
+import { formatTime, fromNow } from '@/constants/dayjs'
 
 interface ConverSationProps extends User {
   conversations?: ChatDto.ConversationResponse[]
@@ -25,51 +28,101 @@ export default function Chat({ receiver, currentUser }: ChatProps) {
   const conversation = currentUser.conversations?.find((conversation) =>
     conversation.users.find((user) => user.id === conversation.receiverId),
   )
+  console.log('receiver', receiver)
+  const lastMessageTime = conversation?.messages
+    .filter((message) => message.receiverId === currentUser.id)
+    .slice(-1)[0].createdAt
+  if (!receiver.receiverName) {
+    return <div />
+  }
   return (
-    <div>
+    <form
+      className={styles.form}
+      onSubmit={async (e) => {
+        e.preventDefault()
+        if (message) {
+          try {
+            await fetch('/api/chat', {
+              method: 'POST',
+              body: JSON.stringify({
+                text: message,
+                receiverId: receiver.receiverId,
+                senderId: session?.id,
+              }),
+            })
+          } catch (error) {
+            console.error(error)
+          }
+        }
+        setMessage('')
+      }}
+    >
+      <div className={styles.receiverInfo}>
+        <Image
+          className={styles.image}
+          src={receiver.receiverImage}
+          width={30}
+          height={30}
+          alt="profile"
+        />
+        <div className={styles.infoContainer}>
+          <h2>{receiver.receiverName}</h2>
+          <span>{formatTime(lastMessageTime!)}</span>
+        </div>
+      </div>
       <div>
         {conversation &&
           conversation.messages.map((message) => {
+            const isSender = message.senderId === currentUser.id
             return (
               <div key={message.id}>
-                {message.text && (
-                  <div>
-                    <p>{message.text}</p>
+                {isSender ? (
+                  <div className={styles.sender}>
+                    <div className={styles.info}>
+                      <div className={styles.fBox}>
+                        <span>{fromNow(message.createdAt)}</span>
+                        <h3>You</h3>
+                      </div>
+                      <span>{message.text}</span>
+                    </div>
+                    <Image
+                      className={styles.image}
+                      src={message.sender?.image!}
+                      width={30}
+                      height={30}
+                      alt="profile"
+                    />
+                  </div>
+                ) : (
+                  <div className={styles.receiver}>
+                    <Image
+                      className={styles.image}
+                      src={message.sender?.image!}
+                      width={30}
+                      height={30}
+                      alt="profile"
+                    />
+                    <div>
+                      <div className={styles.fBox}>
+                        <h3>{message.sender.name}</h3>
+                        <span>{fromNow(message.createdAt)}</span>
+                      </div>
+                      <span>{message.text}</span>
+                    </div>
                   </div>
                 )}
               </div>
             )
           })}
       </div>
-      <div>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault()
-            if (message) {
-              try {
-                await fetch('/api/chat', {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    text: message,
-                    receiverId: receiver.receiverId,
-                    senderId: session?.id,
-                  }),
-                })
-              } catch (error) {
-                console.error(error)
-              }
-            }
-            setMessage('')
-          }}
-        >
-          <Input
-            type="text"
-            placeholder="메시지를 작성해주세요."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-        </form>
+      <div className={styles.inputConatiner}>
+        <Input
+          type="text"
+          placeholder="메시지를 작성해주세요."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
       </div>
-    </div>
+    </form>
   )
 }

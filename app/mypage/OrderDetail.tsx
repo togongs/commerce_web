@@ -4,13 +4,13 @@ import React from 'react'
 import OrderItem from './OrderItem'
 import { Badge } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
-import dayjs from 'dayjs'
 import styles from './OrderDetail.module.scss'
 import { Button } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { CartDto } from '../types/cart/cart.dto'
 import Script from 'next/script'
+import { formatTime } from '@/constants/dayjs'
 
 const ORDER_STATUS_MAP = [
   '주문취소',
@@ -174,7 +174,7 @@ export default function OrderDetail({
                 </span>
               </span>
               <span className={styles.day}>
-                주문일자: {dayjs(createdAt).format('YYYY. MM. DD')}
+                주문일자: {formatTime(createdAt)}
               </span>
               <Button
                 type="submit"

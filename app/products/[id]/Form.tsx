@@ -6,7 +6,6 @@ import CustomEditor from '@/components/Editor'
 import { EditorState, convertFromRaw } from 'draft-js'
 import Image from 'next/image'
 import Carousel from 'nuka-carousel'
-import dayjs from 'dayjs'
 import { CATEGORY_MAP } from '@/constants/products'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@mantine/core'
@@ -24,6 +23,7 @@ import { CartDto } from '@/app/types/cart/cart.dto'
 import { OrdersDto } from '@/app/types/orders/orders.dto'
 import { CommentsDto } from '@/app/types/comments/comments.dto'
 import CustomImage from '@/components/CustomImage'
+import { formatTime } from '@/constants/dayjs'
 
 interface FormProps {
   product: ProductDto.Response
@@ -221,9 +221,7 @@ export default function Form({ product, comments }: FormProps) {
           >
             구매하기
           </Button>
-          <p className={styles.date}>
-            등록: {dayjs(product.createdAt).format('YYYY. MM. DD')}
-          </p>
+          <p className={styles.date}>등록: {formatTime(product.createdAt)}</p>
         </div>
       </div>
       <div className={styles.subImageContainer}>
@@ -252,7 +250,7 @@ export default function Form({ product, comments }: FormProps) {
                     />
                   ))}
                 </div>
-                <p>{dayjs(comment.updatedAt).format('YYYY. MM. DD')}</p>
+                <p>{formatTime(comment.updatedAt)}</p>
               </div>
               <CustomEditor
                 editorState={EditorState.createWithContent(

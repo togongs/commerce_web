@@ -1,8 +1,8 @@
 import { ChatDto } from '@/app/types/chat/chat.dto'
-import dayjs from 'dayjs'
 import Image from 'next/image'
 import styles from './ChatList.module.scss'
 import React from 'react'
+import { fromNow } from '@/constants/dayjs'
 
 interface ChatListProps {
   currentUserId: string
@@ -22,7 +22,7 @@ export default function ChatList({ user, currentUserId }: ChatListProps) {
   )
   const latestMessage = messageWithCurrentUser?.messages.slice(-1)[0]
   return (
-    <div style={{ display: 'flex' }}>
+    <div className={styles.container}>
       <Image
         className={styles.image}
         src={user?.image!}
@@ -30,13 +30,13 @@ export default function ChatList({ user, currentUserId }: ChatListProps) {
         height={30}
         alt="profile"
       />
-      <div style={{ flex: 1 }}>
+      <div className={styles.infoContainer}>
         <h3>{user.name}</h3>
         {latestMessage && <p>{latestMessage.text}</p>}
       </div>
       <div>
         {latestMessage && (
-          <p>{dayjs(latestMessage.createdAt).format('YY.MM.DD HH:MM')}</p>
+          <p className={styles.time}>{fromNow(latestMessage.createdAt)}</p>
         )}
       </div>
     </div>

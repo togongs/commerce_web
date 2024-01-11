@@ -1,4 +1,23 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  border: 1px solid #e2e6e7;
+  .leftSection {
+    flex: 1;
+    & > h1 {
+      font-size: 24px;
+      font-weight: 700;
+      padding: 12px;
+    }
+    .chatListContainer {
+      .list {
+        cursor: pointer;
+      }
+    }
+  }
+  .rightSection {
+    width: 65%;
+    border-left: 1px solid #e2e6e7;
+  }
 }
